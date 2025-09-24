@@ -1,0 +1,10 @@
+body {
+  padding-top: 70px; /* altura da navbar */
+}
+
+/* Ajuste opcional para telas pequenas */
+@media (max-width: 576px) {
+  body {
+    padding-top: 90px; /* aumenta se a navbar crescer no mobile */
+  }
+}

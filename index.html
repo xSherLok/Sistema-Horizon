@@ -1,42 +1,142 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/all.css">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Loja</title>
+  <link rel="stylesheet" href="assets/css/all.css">
+  <link rel="stylesheet" href="style.css"> <!-- CSS separado -->
 </head>
 <body>
+
+  <!--navbar-->
+<!--navbar-->
+<nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+            data-bs-target="#navbarSupportedContent" 
+            aria-controls="navbarSupportedContent" aria-expanded="false" 
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" 
+             data-bs-toggle="dropdown" aria-expanded="false">
+            Dropdown
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+        </li>
+      </ul>
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+</nav>
     
-    <!-- Form Login -->
-<section>
+  <!-- Form Login -->
+  <section id="loginForm" class="active">
     <div id="form-container" class="p-4 bg-white shadow rounded">
-        <h2 class="mb-4 text-center">Login</h2>
-        
-        <form>
-          <div class="mb-3 row">
-            <label for="staticEmail" class="col-sm-3 col-form-label">Email</label>
-            <div class="col-sm-9">
-              <input type="email" class="form-control" id="staticEmail" placeholder="Digite seu email">
-            </div>
+      <h2 class="mb-4 text-center">Login</h2>
+      <form>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">Email</label>
+          <div class="col-sm-9">
+            <input type="email" class="form-control" placeholder="Digite seu email">
           </div>
-    
-          <div class="mb-3 row">
-            <label for="inputPassword" class="col-sm-3 col-form-label">Senha</label>
-            <div class="col-sm-9">
-              <input type="password" class="form-control" id="inputPassword" placeholder="Digite sua senha">
-            </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">Senha</label>
+          <div class="col-sm-9">
+            <input type="password" class="form-control" placeholder="Digite sua senha">
           </div>
-    
-          <button type="submit" class="btn btn-primary w-100">Entrar</button>
-    
-          <div class="d-flex justify-content-between mt-3">
-            <a href="#">Cadastrar-se</a>
-            <a href="#">Esqueci a senha</a>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Entrar</button>
+        <div class="d-flex justify-content-between mt-3">
+          <a href="#" id="showRegister">Cadastrar-se</a>
+          <a href="#" id="showForgot">Esqueci a senha</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Form Cadastrar-se -->
+  <section id="registerForm">
+    <div id="form-container" class="p-4 bg-white shadow rounded">
+      <h2 class="mb-4 text-center">Cadastrar-se</h2>
+      <form>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">Email</label>
+          <div class="col-sm-9">
+            <input type="email" class="form-control" placeholder="Digite seu email">
           </div>
-        </form>
-      </div>
-</section>
-    
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">Nome Completo</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" placeholder="Nome e Sobrenome">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">Senha</label>
+          <div class="col-sm-9">
+            <input type="password" class="form-control" placeholder="Digite sua senha">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">Confirmar senha</label>
+          <div class="col-sm-9">
+            <input type="password" class="form-control" placeholder="Confirme sua senha">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Cadastrar-se</button>
+        <div class="d-flex justify-content-between mt-3">
+          <a href="#" id="backToLogin1">Voltar para tela de login</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Form Esqueci a senha -->
+  <section id="forgotForm">
+    <div id="form-container" class="p-4 bg-white shadow rounded">
+      <h2 class="mb-4 text-center">Esqueci a senha</h2>
+      <form>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">Email</label>
+          <div class="col-sm-9">
+            <input type="email" class="form-control" placeholder="Digite seu email">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Continuar</button>
+        <div class="d-flex justify-content-between mt-3">
+          <a href="#" id="backToLogin2">Voltar para tela de login</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- jQuery + JS separado -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
