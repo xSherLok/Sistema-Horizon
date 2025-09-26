@@ -1,3 +1,13 @@
 @import url('../bootstrap/css/bootstrap.css');
 @import url('login.css');
 @import url('navbar.css');
+
+/* Alternância das telas */
+section { display: none; }
+section.active { display: block; }
+
+/* Se usar navbar .fixed-top, empurra o conteúdo pra baixo */
+body { padding-top: 72px; }
+
+/* Garante que o container do formulário fique clicável por cima de qualquer overlay acidental */
+#form-container { position: relative; z-index: 2; }
