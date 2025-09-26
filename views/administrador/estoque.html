@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Clientes</title>
+
+  <!-- CSS do DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../assets/datatable/css/estoque.css">
+
+  <style>
+
+  </style>
+</head>
+<body>
+
+     <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">LOGO</div>
+      <ul class="menu">
+        <li class="active"><a href="#">Dashboard</a></li>
+        <li><a href="#">Vendas</a></li>
+        <li><a href="#">Estoque</a></li>
+        <li><a href="#">Clientes</a></li>
+        <li><a href="#">Fornecedores</a></li>
+        <li><a href="#">Contas a Pagar</a></li>
+        <li><a href="#">Contas a Receber</a></li>
+      </ul>
+      <div class="bottom-menu">
+        <a href="#">Configurações</a>
+        <a href="#">Sair</a>
+      </div>
+    </aside>
+
+
+  <div class="dashboard-header">
+    <h1>Lista de Produtos</h1>
+    <button class="btn-add" id="btnAddCliente"><i class="fa fa-plus"></i> Adicionar Novo Produto</button>
+  </div>
+
+  <table id="clientes" class="display" style="width:100%">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Produto</th>
+        <th>Quantidade</th>
+        <th>Fornecedor</th>
+        <th>Custo</th>
+        <th>Valor</th>
+        <th>Lucro</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Camiseta Oversized Masculina</td>
+        <td>999</td>
+        <td>999</td>
+        <td>999</td>
+        <td>9999</td>
+        <td>999</td>
+        <td><button class="btn-edit">Editar</button> <button class="btn-delete">Excluir</button></td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Camiseta Oversized Masculina</td>
+        <td>999</td>
+        <td>999</td>
+        <td>999</td>
+        <td>9999</td>
+        <td>999</td>
+        <td><button class="btn-edit">Editar</button> <button class="btn-delete">Excluir</button></td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Camiseta Oversized Masculina</td>
+        <td>999</td>
+        <td>999</td>
+        <td>999</td>
+        <td>9999</td>
+        <td>999</td>
+        <td><button class="btn-edit">Editar</button> <button class="btn-delete">Excluir</button></td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Camiseta Oversized Masculina</td>
+        <td>999</td>
+        <td>999</td>
+        <td>999</td>
+        <td>9999</td>
+        <td>999</td>
+        <td><button class="btn-edit">Editar</button> <button class="btn-delete">Excluir</button></td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Camiseta Oversized Masculina</td>
+        <td>999</td>
+        <td>999</td>
+        <td>999</td>
+        <td>9999</td>
+        <td>999</td>
+        <td><button class="btn-edit">Editar</button> <button class="btn-delete">Excluir</button></td>
+      </tr>
+      <!-- Adicione mais clientes aqui -->
+    </tbody>
+  </table>
+
+  <!-- JS -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="../../assets/datatable/js/estoque.js"></script>
+</body>
+</html>

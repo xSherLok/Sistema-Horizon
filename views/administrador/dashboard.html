@@ -1,11 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Moderno</title>
+  <link rel="stylesheet" href="../../assets/css/dashboard.css">
 </head>
 <body>
-    
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">LOGO</div>
+      <ul class="menu">
+        <li class="active"><a href="#">Dashboard</a></li>
+        <li><a href="#">Vendas</a></li>
+        <li><a href="#">Estoque</a></li>
+        <li><a href="#">Clientes</a></li>
+        <li><a href="#">Fornecedores</a></li>
+        <li><a href="#">Contas a Pagar</a></li>
+        <li><a href="#">Contas a Receber</a></li>
+      </ul>
+      <div class="bottom-menu">
+        <a href="#">Configurações</a>
+        <a href="#">Sair</a>
+      </div>
+    </aside>
+
+    <!-- Conteúdo principal -->
+    <main class="main">
+      <header class="topbar">
+        <h1>Dashboard</h1>
+        <input type="text" placeholder="Pesquisar...">
+        <div class="user">
+          <span>Seu Nome</span>
+          <div class="avatar">👤</div>
+        </div>
+      </header>
+
+      <!-- Cards principais -->
+      <section class="cards">
+        <div class="card green">
+          <h3>R$ 513</h3>
+          <p>Total Faturado</p>
+        </div>
+        <div class="card yellow">
+          <h3>321</h3>
+          <p>Transações</p>
+        </div>
+        <div class="card red">
+          <h3>564</h3>
+          <p>Produtos</p>
+        </div>
+        <div class="card blue">
+          <h3>254</h3>
+          <p>Clientes</p>
+        </div>
+      </section>
+
+      <!-- Exemplo de duas colunas -->
+      <section class="grid">
+        <div class="box">
+          <h3>Crescimento da Receita</h3>
+          <p>(Aqui você pode colocar um gráfico futuramente)</p>
+        </div>
+        <div class="box">
+          <h3>Produtos Mais Vendidos</h3>
+          <p>(Aqui você pode colocar um gráfico de pizza futuramente)</p>
+        </div>
+      </section>
+    </main>
+  </div>
 </body>
 </html>
