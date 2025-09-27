@@ -1,6 +1,7 @@
 @import url('../bootstrap/css/bootstrap.css');
 @import url('login.css');
 @import url('navbar.css');
+@import url('alert.css');
 
 /* Alternância das telas */
 section { display: none; }

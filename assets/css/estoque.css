@@ -1,0 +1,55 @@
+/* ===== Sidebar ===== */
+.sidebar {
+  width: 220px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #4dc3ff, #00bfff);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  position: fixed;
+}
+
+.sidebar .menu li a {
+  color: white; /* texto branco */
+  font-weight: 600;
+}
+
+.sidebar .menu li.active a,
+.sidebar .menu li a:hover {
+  background-color: rgba(255,255,255,0.2);
+  color: white;
+}
+
+/* ===== Cards de resumo ===== */
+.card-container {
+  display: flex;
+  gap: 20px;
+  margin: 20px 240px;
+  flex-wrap: wrap;
+}
+
+.card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  flex: 1;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 5px;
+  width: 100%;
+  border-radius: 12px 12px 0 0;
+}
+
+.card.total-faturado::before { background-color: #28a745; } /* verde */
+.card.transacoes::before { background-color: #ffc107; } /* amarelo */
+.card.produtos::before { background-color: #dc3545; } /* vermelho */
+.card.clientes::before { background-color: #007bff; } /* azul */
