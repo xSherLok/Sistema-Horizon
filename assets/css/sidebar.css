@@ -34,7 +34,7 @@
 
 .menu li.active a,
 .menu li a:hover {
-  background: #1d4ed8;
+  background: #1d4ed8 !important;
 }
 
 .bottom-menu {
