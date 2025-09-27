@@ -1,11 +1,7 @@
 @import url('../bootstrap/css/bootstrap.css');
 @import url('login.css');
 @import url('navbar.css');
-<<<<<<< HEAD
-@import url('alert.css');
-=======
 @import url('telas.css');
->>>>>>> 9dfc57cfa26034540ab89edf91187ad8ecce8b03
 
 /* Alternância das telas */
 section { display: none; }
