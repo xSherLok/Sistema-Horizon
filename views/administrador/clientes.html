@@ -23,34 +23,38 @@
     </ul>
     <div class="bottom-menu">
       <a href="configuracoes.html">Configurações</a>
-      <a href="#">Sair</a>
+      <a href="#" id="logoutBtn">Sair</a>
     </div>
   </aside>
 
   <!-- Conteúdo principal -->
   <div class="main-content">
     <!-- Header -->
-     <header class="topbar">
-        <h1>Vendas</h1>
-        <input type="text" placeholder="Pesquisar...">
-        <div class="user">
-          <span>Seu Nome</span>
-          <div class="avatar">👤</div>
-        </div>
-      </header>
+    <header class="topbar d-flex align-items-center gap-3">
+      <h1 class="m-0">Clientes</h1>
+      <div class="flex-grow-1"></div>
+      <input id="buscaClientes" type="text" class="form-control w-auto" placeholder="Pesquisar clientes...">
+      <div class="user">
+        <span>Seu Nome</span>
+        <div class="avatar">👤</div>
+      </div>
+    </header>
+
+    <!-- Mensagens -->
+    <div id="msg" class="mt-3" style="display:none;"></div>
 
     <!-- Tabela de clientes -->
-    <div class="card shadow-sm" style="border:none; border-radius:12px;">
+    <div class="card shadow-sm mt-3" style="border:none; border-radius:12px;">
       <div class="card-body">
         <div class="d-flex align-items-center justify-content-between mb-3">
           <h3 class="mb-0">Clientes cadastrados</h3>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNovoCliente">
+          <button id="novoClienteBtn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCliente">
             Novo cliente
           </button>
         </div>
 
         <div class="table-responsive">
-          <table class="table align-middle mb-0">
+          <table id="tabelaClientes" class="table align-middle mb-0">
             <thead class="table-light">
               <tr>
                 <th>Nome</th>
@@ -59,62 +63,42 @@
                 <th>CPF/CNPJ</th>
                 <th>Status</th>
                 <th>Cadastro</th>
+                <th style="width:140px">Ações</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>João Silva</td>
-                <td>joao.silva@email.com</td>
-                <td>(42) 99999-1234</td>
-                <td>123.456.789-00</td>
-                <td><span class="badge bg-success">Ativo</span></td>
-                <td>15/09/2025</td>
-              </tr>
-              <tr>
-                <td>Maria Oliveira</td>
-                <td>maria.oli@example.com</td>
-                <td>(42) 98888-4567</td>
-                <td>987.654.321-00</td>
-                <td><span class="badge bg-success">Ativo</span></td>
-                <td>10/09/2025</td>
-              </tr>
-              <tr>
-                <td>Loja ABC LTDA</td>
-                <td>contato@lojaabc.com.br</td>
-                <td>(11) 4002-8922</td>
-                <td>12.345.678/0001-90</td>
-                <td><span class="badge bg-secondary">Inativo</span></td>
-                <td>01/08/2025</td>
-              </tr>
+              <!-- preenchido via JS -->
             </tbody>
           </table>
         </div>
 
+        <!-- (Opcional) Paginação -->
+        <!-- <nav class="mt-3" id="paginacaoClientes"></nav> -->
       </div>
     </div>
 
-    <!-- Modal: Novo Cliente -->
-    <div class="modal fade" id="modalNovoCliente" tabindex="-1" aria-hidden="true">
+    <!-- Modal: Novo/Editar Cliente -->
+    <div class="modal fade" id="modalCliente" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h2 class="h5 mb-0">Cadastrar novo cliente</h2>
+            <h2 class="h5 mb-0">Cadastrar/Editar cliente</h2>
             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Fechar"></button>
           </div>
           <div class="modal-body">
-            <form id="form-cliente" class="needs-validation" novalidate>
+            <form id="formCliente" class="needs-validation" novalidate>
               <!-- Dados principais -->
               <div class="row g-3">
                 <div class="col-lg-8">
                   <label class="form-label">Nome completo / Razão social <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="cliNome" required>
+                  <input type="text" class="form-control" name="nome" id="cliNome" required>
                   <div class="invalid-feedback">Informe o nome do cliente.</div>
                 </div>
                 <div class="col-lg-4">
                   <label class="form-label">Status</label>
-                  <select class="form-select" id="cliStatus">
-                    <option>Ativo</option>
-                    <option>Inativo</option>
+                  <select class="form-select" name="status" id="cliStatus">
+                    <option value="ativo" selected>Ativo</option>
+                    <option value="inativo">Inativo</option>
                   </select>
                 </div>
               </div>
@@ -123,19 +107,19 @@
               <div class="row g-3 mt-1">
                 <div class="col-lg-6">
                   <label class="form-label">E-mail</label>
-                  <input type="email" class="form-control" id="cliEmail" placeholder="email@exemplo.com">
+                  <input type="email" class="form-control" name="email" id="cliEmail" placeholder="email@exemplo.com">
                 </div>
                 <div class="col-lg-3">
                   <label class="form-label">Telefone</label>
-                  <input type="tel" class="form-control" id="cliTelefone" placeholder="(00) 00000-0000">
+                  <input type="tel" class="form-control" name="telefone" id="cliTelefone" placeholder="(00) 00000-0000">
                 </div>
                 <div class="col-lg-3">
                   <label class="form-label">CPF/CNPJ</label>
-                  <input type="text" class="form-control" id="cliDocumento" placeholder="___.___.___-__ / __.___.___/____-__">
+                  <input type="text" class="form-control" name="cpfCnpj" id="cliDocumento" placeholder="___.___.___-__ / __.___.___/____-__">
                 </div>
               </div>
 
-              <!-- Nascimento / Gênero -->
+              <!-- Campos extras opcionais (não usados no backend, pode manter para UI) -->
               <div class="row g-3 mt-1">
                 <div class="col-lg-4">
                   <label class="form-label">Data de nascimento</label>
@@ -152,7 +136,7 @@
                 </div>
                 <div class="col-lg-4">
                   <label class="form-label">CEP</label>
-                  <input type="text" class="form-control" id="cliCEP" placeholder="00000-000">
+                  <input type="text" class="form-control" name="cep" id="cliCEP" placeholder="00000-000">
                 </div>
               </div>
 
@@ -160,11 +144,11 @@
               <div class="row g-3 mt-1">
                 <div class="col-lg-6">
                   <label class="form-label">Endereço</label>
-                  <input type="text" class="form-control" id="cliEndereco" placeholder="Rua, avenida...">
+                  <input type="text" class="form-control" name="rua" id="cliEndereco" placeholder="Rua, avenida...">
                 </div>
                 <div class="col-lg-2">
                   <label class="form-label">Número</label>
-                  <input type="text" class="form-control" id="cliNumero" placeholder="Nº">
+                  <input type="text" class="form-control" name="numero" id="cliNumero" placeholder="Nº">
                 </div>
                 <div class="col-lg-4">
                   <label class="form-label">Complemento</label>
@@ -174,15 +158,15 @@
               <div class="row g-3 mt-1">
                 <div class="col-lg-5">
                   <label class="form-label">Bairro</label>
-                  <input type="text" class="form-control" id="cliBairro">
+                  <input type="text" class="form-control" name="bairro" id="cliBairro">
                 </div>
                 <div class="col-lg-5">
                   <label class="form-label">Cidade</label>
-                  <input type="text" class="form-control" id="cliCidade">
+                  <input type="text" class="form-control" name="cidade" id="cliCidade">
                 </div>
                 <div class="col-lg-2">
                   <label class="form-label">UF</label>
-                  <select class="form-select" id="cliUF">
+                  <select class="form-select" name="uf" id="cliUF">
                     <option value="" selected>--</option>
                     <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option>
                     <option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option>
@@ -197,13 +181,13 @@
               <!-- Observações -->
               <div class="mt-3">
                 <label class="form-label">Observações</label>
-                <textarea class="form-control" id="cliObs" rows="3" placeholder="Notas internas sobre o cliente..."></textarea>
+                <textarea class="form-control" name="observacoes" id="cliObs" rows="3" placeholder="Notas internas sobre o cliente..."></textarea>
               </div>
             </form>
           </div>
           <div class="modal-footer">
             <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button class="btn btn-primary" form="form-cliente" type="submit">Salvar cliente</button>
+            <button class="btn btn-primary" form="formCliente" type="submit">Salvar cliente</button>
           </div>
         </div>
       </div>
@@ -212,5 +196,6 @@
   </div>
 
   <script src="../../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/script.js"></script>
 </body>
 </html>

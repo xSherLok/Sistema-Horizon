@@ -12,6 +12,7 @@ import { fileURLToPath } from 'url';
 import authRoutes from './src/routes/auth.routes.js';
 import userRoutes from './src/routes/user.routes.js';
 import { requireAuth } from './src/middleware/auth.js';
+import clienteRoutes from './src/routes/cliente.routes.js';
 
 dotenv.config();
 
@@ -34,6 +35,8 @@ app.use(limiter);
 // ====== API ROUTES ======
 app.use('/api/auth', authRoutes);
 app.use('/api/user', requireAuth, userRoutes);
+app.use('/api/clientes', clienteRoutes);
+
 
 // Healthcheck API
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
@@ -99,3 +102,60 @@ mongoose.connect(uri, { autoIndex: true })
     console.error('Erro ao conectar ao MongoDB:', err);
     process.exit(1);
   });
+
+
+  // Botão "Novo cliente" (limpa formulário e abre modal)
+document.addEventListener('click', (e) => {
+  const btnNew = e.target.closest('#novoClienteBtn');
+  if (!btnNew) return;
+
+  resetFormCliente();
+
+  // abre a modal programaticamente (garante abertura)
+  const modalEl = document.getElementById('modalCliente');
+  if (modalEl && window.bootstrap) {
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+  }
+});
+
+// Clique nos botões de editar/excluir dentro da tabela
+document.addEventListener('click', async (e) => {
+  // EXCLUIR
+  const btnDel = e.target.closest('[data-del]');
+  if (btnDel) {
+    e.preventDefault();
+    if (!confirm('Confirma a exclusão?')) return;
+    const id = btnDel.dataset.del;
+    try {
+      const r = await api('/clientes/' + id, { method: 'DELETE' });
+      if (r && r.ok) {
+        showMsg('Cliente removido', 'ok');
+        carregarClientes();
+      }
+    } catch (err) {
+      showMsg(err.message, 'error');
+    }
+    return;
+  }
+
+  // EDITAR
+  const btnEdit = e.target.closest('[data-edit]');
+  if (btnEdit) {
+    e.preventDefault();
+    const id = btnEdit.dataset.edit;
+    try {
+      const c = await api('/clientes/' + id);
+      preencherFormCliente(c);
+
+      // abre a modal de edição (garante abertura mesmo sem data-bs-*)
+      const modalEl = document.getElementById('modalCliente');
+      if (modalEl && window.bootstrap) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+      }
+    } catch (err) {
+      showMsg(err.message, 'error');
+    }
+  }
+});
