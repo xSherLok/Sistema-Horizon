@@ -42,33 +42,26 @@ body {
 }
 
 /* Header com search e avatar */
-.header {
+/* Topbar */
+.topbar {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
   margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 10px;
 }
 
-.search-avatar {
+.topbar input {
+  flex: 1;
+  margin: 0 20px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.user {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.header input {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  width: 250px;
-  transition: border 0.3s, box-shadow 0.3s;
-}
-
-.header input:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
-  outline: none;
 }
 
 .avatar {
@@ -80,15 +73,8 @@ body {
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
 }
 
-.avatar:hover {
-  background: #1e40af;
-  transform: translateY(-2px);
-}
 
 /* ===== Cards ===== */
 .cards {
