@@ -1,0 +1,52 @@
+/* Sidebar */
+.sidebar {
+  width: 240px;
+ background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.menu {
+  list-style: none;
+}
+
+.menu li {
+  margin: 15px 0;
+}
+
+.menu li a {
+  text-decoration: none;
+  color: black;
+  font-weight: bolder;
+  padding: 10px 15px;
+  display: block;
+  border-radius: 10px;
+  transition: background 0.3s;
+}
+
+.menu li.active a,
+.menu li a:hover {
+  background: #1d4ed8;
+}
+
+.bottom-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bottom-menu a {
+  text-decoration: none;
+  color: black;
+  font-size: 14px;
+  font-weight: bold;
+}

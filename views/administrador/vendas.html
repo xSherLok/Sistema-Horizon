@@ -4,9 +4,12 @@
   <meta charset="UTF-8">
   <title>Vendas</title>
   <link rel="stylesheet" href="../../assets/css/telas.css">
+  <link rel="stylesheet" href="../../assets/css/sidebar.css">
+  <link rel="stylesheet" href="../../assets/css/avatar.css">
+  <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.min.css">
 </head>
 <body>
-  <!-- Sidebar copiada da dashboard -->
+  <!-- Sidebar -->
   <aside class="sidebar">
       <div class="logo">LOGO</div>
       <ul class="menu">
@@ -26,25 +29,50 @@
 
   <!-- Conteúdo principal -->
   <div class="main-content">
+    <!-- Header -->
     <div class="header">
       <h1>Vendas</h1>
-      <input type="text" placeholder="Pesquisar...">
-    
-    
-    <div class="charts">Gráfico de vendas será exibido aqui futuramente]</div>
+      <div class="search-avatar">
+        <input type="text" placeholder="Pesquisar...">
+        <div class="avatar">G</div>
+      </div>
+    </div>
 
+    <!-- Gráfico -->
+    <div class="charts">[Gráfico de vendas será exibido aqui futuramente]</div>
+
+    <!-- Tabela de vendas -->
     <div class="table">
-      <h3>Últimas Vendas</h3>
+      <div class="table-header">
+        <h3>Últimas Vendas</h3>
+        <button class="btn-nova-venda">Nova Venda</button>
+      </div>
       <table>
         <thead>
-          <tr><th>Cliente</th><th>Produto</th><th>Valor</th><th>Data</th></tr>
+          <tr>
+            <th>Cliente</th>
+            <th>Produto</th>
+            <th>Valor</th>
+            <th>Data</th>
+          </tr>
         </thead>
         <tbody>
-          <tr><td>João Silva</td><td>Notebook</td><td>R$ 3.000</td><td>25/09/2025</td></tr>
-          <tr><td>Maria Oliveira</td><td>Mouse</td><td>R$ 120</td><td>24/09/2025</td></tr>
+          <tr>
+            <td>João Silva</td>
+            <td>Notebook</td>
+            <td>R$ 3.000</td>
+            <td>25/09/2025</td>
+          </tr>
+          <tr>
+            <td>Maria Oliveira</td>
+            <td>Mouse</td>
+            <td>R$ 120</td>
+            <td>24/09/2025</td>
+          </tr>
         </tbody>
       </table>
     </div>
   </div>
+  <script src="../../assets/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>
