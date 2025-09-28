@@ -1,0 +1,12 @@
+/* ===== Layout ===== */
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Main content padrão */
+.main {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
