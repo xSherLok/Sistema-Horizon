@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.min.css">
 </head>
 <body>
-  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="logo">LOGO</div>
     <ul class="menu">
@@ -23,165 +22,128 @@
     </ul>
     <div class="bottom-menu">
       <a href="configuracoes.html">Configurações</a>
-      <a href="#">Sair</a>
+      <a href="#" id="logoutBtn">Sair</a>
     </div>
   </aside>
 
-  <!-- Conteúdo principal -->
   <div class="main-content">
-    <!-- Header -->
-     <header class="topbar">
-        <h1>Vendas</h1>
-        <input type="text" placeholder="Pesquisar...">
-        <div class="user">
-          <span>Seu Nome</span>
-          <div class="avatar">👤</div>
-        </div>
-      </header>
+    <header class="topbar d-flex align-items-center gap-3">
+      <h1 class="m-0">Fornecedores</h1>
+      <div class="flex-grow-1"></div>
+      <input id="buscaFornecedores" type="text" class="form-control w-auto" placeholder="Pesquisar fornecedores...">
+      <div class="user">
+        <span>Seu Nome</span>
+        <div class="avatar">👤</div>
+      </div>
+    </header>
 
-    <!-- Tabela de fornecedores -->
-    <div class="card shadow-sm" style="border:none; border-radius:12px;">
+    <div id="msg" class="mt-3" style="display:none;"></div>
+
+    <div class="card shadow-sm mt-3" style="border:none; border-radius:12px;">
       <div class="card-body">
         <div class="d-flex align-items-center justify-content-between mb-3">
           <h3 class="mb-0">Fornecedores cadastrados</h3>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNovoFornecedor">
+          <button id="novoFornecedorBtn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFornecedor">
             Novo fornecedor
           </button>
         </div>
 
         <div class="table-responsive">
-          <table class="table align-middle mb-0">
+          <table id="tabelaFornecedores" class="table align-middle mb-0">
             <thead class="table-light">
               <tr>
-                <th>Razão Social</th>
-                <th>Nome Fantasia</th>
-                <th>CNPJ</th>
-                <th>Contato</th>
+                <th>Razão social</th>
+                <th>Nome fantasia</th>
+                <th>E-mail</th>
                 <th>Telefone</th>
+                <th>CNPJ</th>
                 <th>Status</th>
+                <th>Cadastro</th>
+                <th style="width:140px">Ações</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Tecidos Brasil LTDA</td>
-                <td>Tecidos Brasil</td>
-                <td>12.345.678/0001-99</td>
-                <td>Carla Souza</td>
-                <td>(11) 4002-8922</td>
-                <td><span class="badge bg-success">Ativo</span></td>
-              </tr>
-              <tr>
-                <td>Fashion Buttons Indústria</td>
-                <td>Fashion Buttons</td>
-                <td>98.765.432/0001-10</td>
-                <td>Rogério Lima</td>
-                <td>(41) 98888-1122</td>
-                <td><span class="badge bg-secondary">Inativo</span></td>
-              </tr>
-              <tr>
-                <td>Malharias Unidas S/A</td>
-                <td>Malharias Unidas</td>
-                <td>55.444.333/0001-77</td>
-                <td>Beatriz Ramos</td>
-                <td>(21) 97777-3344</td>
-                <td><span class="badge bg-success">Ativo</span></td>
-              </tr>
+              <!-- via JS -->
             </tbody>
           </table>
         </div>
-
       </div>
     </div>
 
-    <!-- Modal: Novo Fornecedor -->
-    <div class="modal fade" id="modalNovoFornecedor" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <!-- Modal -->
+    <div class="modal fade" id="modalFornecedor" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h2 class="h5 mb-0">Cadastrar novo fornecedor</h2>
+            <h2 class="h5 mb-0">Cadastrar/Editar fornecedor</h2>
             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Fechar"></button>
           </div>
           <div class="modal-body">
-            <form id="form-fornecedor" class="needs-validation" novalidate>
-              <!-- Identificação -->
+            <form id="formFornecedor" class="needs-validation" novalidate>
               <div class="row g-3">
                 <div class="col-lg-6">
-                  <label class="form-label">Razão Social <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="forRazao" required>
+                  <label class="form-label">Razão social <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" name="razaoSocial" required>
                   <div class="invalid-feedback">Informe a razão social.</div>
                 </div>
                 <div class="col-lg-6">
-                  <label class="form-label">Nome Fantasia</label>
-                  <input type="text" class="form-control" id="forFantasia" placeholder="Como é conhecido no mercado">
+                  <label class="form-label">Nome fantasia</label>
+                  <input type="text" class="form-control" name="nomeFantasia">
                 </div>
               </div>
 
               <div class="row g-3 mt-1">
                 <div class="col-lg-4">
-                  <label class="form-label">CNPJ <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="forCNPJ" placeholder="00.000.000/0001-00" required>
-                  <div class="invalid-feedback">Informe um CNPJ válido.</div>
+                  <label class="form-label">CNPJ</label>
+                  <input type="text" class="form-control" name="cnpj" placeholder="__.___.___/____-__">
                 </div>
                 <div class="col-lg-4">
                   <label class="form-label">Inscrição Estadual</label>
-                  <input type="text" class="form-control" id="forIE" placeholder="Isento / número">
+                  <input type="text" class="form-control" name="inscricaoEstadual">
                 </div>
                 <div class="col-lg-4">
                   <label class="form-label">Status</label>
-                  <select class="form-select" id="forStatus">
-                    <option>Ativo</option>
-                    <option>Inativo</option>
+                  <select class="form-select" name="status">
+                    <option value="ativo" selected>Ativo</option>
+                    <option value="inativo">Inativo</option>
                   </select>
                 </div>
               </div>
 
-              <!-- Contato -->
               <div class="row g-3 mt-1">
-                <div class="col-lg-4">
-                  <label class="form-label">Pessoa de contato</label>
-                  <input type="text" class="form-control" id="forContato" placeholder="Nome do responsável">
-                </div>
-                <div class="col-lg-4">
+                <div class="col-lg-6">
                   <label class="form-label">E-mail</label>
-                  <input type="email" class="form-control" id="forEmail" placeholder="email@fornecedor.com.br">
+                  <input type="email" class="form-control" name="email" placeholder="contato@exemplo.com.br">
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-6">
                   <label class="form-label">Telefone</label>
-                  <input type="tel" class="form-control" id="forTelefone" placeholder="(00) 00000-0000">
+                  <input type="tel" class="form-control" name="telefone" placeholder="(00) 00000-0000">
                 </div>
               </div>
 
-              <!-- Endereço -->
               <div class="row g-3 mt-1">
-                <div class="col-lg-3">
-                  <label class="form-label">CEP</label>
-                  <input type="text" class="form-control" id="forCEP" placeholder="00000-000">
-                </div>
-                <div class="col-lg-5">
+                <div class="col-lg-6">
                   <label class="form-label">Endereço</label>
-                  <input type="text" class="form-control" id="forEndereco" placeholder="Rua, avenida...">
+                  <input type="text" class="form-control" name="rua" placeholder="Rua, avenida...">
                 </div>
                 <div class="col-lg-2">
                   <label class="form-label">Número</label>
-                  <input type="text" class="form-control" id="forNumero" placeholder="Nº">
+                  <input type="text" class="form-control" name="numero" placeholder="Nº">
                 </div>
-                <div class="col-lg-2">
-                  <label class="form-label">Complemento</label>
-                  <input type="text" class="form-control" id="forComplemento" placeholder="Sala, bloco...">
-                </div>
-              </div>
-              <div class="row g-3 mt-1">
                 <div class="col-lg-4">
                   <label class="form-label">Bairro</label>
-                  <input type="text" class="form-control" id="forBairro">
+                  <input type="text" class="form-control" name="bairro">
                 </div>
-                <div class="col-lg-4">
+              </div>
+
+              <div class="row g-3 mt-1">
+                <div class="col-lg-6">
                   <label class="form-label">Cidade</label>
-                  <input type="text" class="form-control" id="forCidade">
+                  <input type="text" class="form-control" name="cidade">
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-2">
                   <label class="form-label">UF</label>
-                  <select class="form-select" id="forUF">
+                  <select class="form-select" name="uf">
                     <option value="" selected>--</option>
                     <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option>
                     <option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option>
@@ -191,85 +153,21 @@
                     <option>SE</option><option>TO</option>
                   </select>
                 </div>
-              </div>
-
-              <!-- Financeiro -->
-              <div class="row g-3 mt-1">
-                <div class="col-lg-3">
-                  <label class="form-label">Condição de pagamento</label>
-                  <select class="form-select" id="forCondicao">
-                    <option value="" selected>Selecione...</option>
-                    <option>À vista</option>
-                    <option>14 dias</option>
-                    <option>21 dias</option>
-                    <option>28 dias</option>
-                    <option>30/60</option>
-                    <option>30/60/90</option>
-                  </select>
-                </div>
-                <div class="col-lg-3">
-                  <label class="form-label">Prazo de entrega (dias)</label>
-                  <input type="number" min="0" class="form-control" id="forPrazo">
-                </div>
-                <div class="col-lg-3">
-                  <label class="form-label">Pedido mínimo (R$)</label>
-                  <input type="number" step="0.01" min="0" class="form-control" id="forPedidoMin">
-                </div>
-                <div class="col-lg-3">
-                  <label class="form-label">Categoria</label>
-                  <select class="form-select" id="forCategoria">
-                    <option value="" selected>Selecione...</option>
-                    <option>Tecidos</option>
-                    <option>Malharias</option>
-                    <option>Aviamentos</option>
-                    <option>Estamparia</option>
-                    <option>Bordado</option>
-                    <option>Logística</option>
-                    <option>Outros</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Bancário / PIX -->
-              <div class="row g-3 mt-1">
                 <div class="col-lg-4">
-                  <label class="form-label">Banco</label>
-                  <input type="text" class="form-control" id="forBanco" placeholder="Banco do Brasil, Itaú...">
-                </div>
-                <div class="col-lg-2">
-                  <label class="form-label">Agência</label>
-                  <input type="text" class="form-control" id="forAgencia">
-                </div>
-                <div class="col-lg-3">
-                  <label class="form-label">Conta</label>
-                  <input type="text" class="form-control" id="forConta">
-                </div>
-                <div class="col-lg-3">
-                  <label class="form-label">Chave PIX</label>
-                  <input type="text" class="form-control" id="forPix" placeholder="CNPJ, e-mail, tel ou aleatória">
+                  <label class="form-label">CEP</label>
+                  <input type="text" class="form-control" name="cep" placeholder="00000-000">
                 </div>
               </div>
 
-              <!-- Links / Observações -->
-              <div class="row g-3 mt-1">
-                <div class="col-lg-6">
-                  <label class="form-label">Website</label>
-                  <input type="url" class="form-control" id="forWebsite" placeholder="https://...">
-                </div>
-                <div class="col-lg-6">
-                  <label class="form-label">Rede social</label>
-                  <input type="url" class="form-control" id="forSocial" placeholder="Instagram, LinkedIn...">
-                </div>
-              </div>
               <div class="mt-3">
                 <label class="form-label">Observações</label>
-                <textarea class="form-control" id="forObs" rows="3" placeholder="Notas internas, condições especiais..."></textarea>
+                <textarea class="form-control" name="observacoes" rows="3" placeholder="Notas internas..."></textarea>
               </div>
             </form>
           </div>
           <div class="modal-footer">
             <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button class="btn btn-primary" form="form-fornecedor" type="submit">Salvar fornecedor</button>
+            <button class="btn btn-primary" form="formFornecedor" type="submit">Salvar fornecedor</button>
           </div>
         </div>
       </div>
@@ -278,5 +176,6 @@
   </div>
 
   <script src="../../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/script.js"></script>
 </body>
 </html>

@@ -15,7 +15,7 @@
     <ul class="menu">
       <li><a href="dashboard.html">Dashboard</a></li>
       <li><a href="vendas.html">Vendas</a></li>
-      <li class="active"><a href="produtos.html">Produtos</a></li>
+      <li class="active"><a href="produto.html">Produtos</a></li>
       <li><a href="clientes.html">Clientes</a></li>
       <li><a href="fornecedores.html">Fornecedores</a></li>
       <li><a href="contas-a-pagar.html">Contas a Pagar</a></li>
@@ -23,28 +23,32 @@
     </ul>
     <div class="bottom-menu">
       <a href="configuracoes.html">Configurações</a>
-      <a href="#">Sair</a>
+      <a href="#" id="logoutBtn">Sair</a>
     </div>
   </aside>
 
   <!-- Conteúdo principal -->
   <div class="main-content">
     <!-- Header -->
-     <header class="topbar">
-        <h1>Vendas</h1>
-        <input type="text" placeholder="Pesquisar...">
-        <div class="user">
-          <span>Seu Nome</span>
-          <div class="avatar">👤</div>
-        </div>
-      </header>
+    <header class="topbar d-flex align-items-center gap-3">
+      <h1 class="m-0">Produtos</h1>
+      <div class="flex-grow-1"></div>
+      <input id="buscaProdutos" type="text" class="form-control w-auto" placeholder="Pesquisar...">
+      <div class="user">
+        <span>Seu Nome</span>
+        <div class="avatar">👤</div>
+      </div>
+    </header>
 
-    <!-- Tabela de produtos -->
-    <div class="card shadow-sm" style="border:none; border-radius:12px;">
+    <!-- Mensagens -->
+    <div id="msg" class="mt-3" style="display:none;"></div>
+
+    <!-- Tabela -->
+    <div class="card shadow-sm mt-3" style="border:none; border-radius:12px;">
       <div class="card-body">
         <div class="d-flex align-items-center justify-content-between mb-3">
           <h3 class="mb-0">Produtos Cadastrados</h3>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNovoProduto">
+          <button id="novoProdutoBtn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNovoProduto">
             Novo produto
           </button>
         </div>
@@ -59,66 +63,38 @@
                 <th>Preço</th>
                 <th>Estoque</th>
                 <th>Status</th>
+                <th style="width:200px">Ações</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>Camiseta Básica</td>
-                <td>Camisetas</td>
-                <td>M</td>
-                <td>R$ 59,90</td>
-                <td>35</td>
-                <td><span class="badge bg-success">Ativo</span></td>
-              </tr>
-              <tr>
-                <td>Calça Jeans Slim</td>
-                <td>Calças</td>
-                <td>42</td>
-                <td>R$ 159,90</td>
-                <td>12</td>
-                <td><span class="badge bg-success">Ativo</span></td>
-              </tr>
-              <tr>
-                <td>Vestido Midi</td>
-                <td>Vestidos</td>
-                <td>P</td>
-                <td>R$ 199,90</td>
-                <td>8</td>
-                <td><span class="badge bg-secondary">Inativo</span></td>
-              </tr>
-            </tbody>
+            <tbody id="tbodyProdutos"><!-- via JS --></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- Modal: Novo Produto -->
+    <!-- Modal: Cadastrar/Editar (sem markup/margem/imagem) -->
     <div class="modal fade" id="modalNovoProduto" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h2 class="h5 mb-0">Cadastrar Produto</h2>
+            <h2 class="h5 mb-0">Cadastrar/Editar Produto</h2>
             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Fechar"></button>
           </div>
           <div class="modal-body">
             <form id="form-produto" class="needs-validation" novalidate>
-              <!-- Linha 1: Básico -->
+              <!-- Linha 1 -->
               <div class="row g-3">
                 <div class="col-lg-6">
-                  <label class="form-label">Nome do produto <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="nome" placeholder="Ex.: Camiseta Básica" required>
+                  <label class="form-label">Nome <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="nome" required placeholder="Ex.: Camiseta Básica">
                   <div class="invalid-feedback">Informe o nome do produto.</div>
                 </div>
                 <div class="col-lg-3">
                   <label class="form-label">Categoria <span class="text-danger">*</span></label>
                   <select class="form-select" id="categoria" required>
                     <option value="" selected disabled>Selecione...</option>
-                    <option>Camisetas</option>
-                    <option>Calças</option>
-                    <option>Bermudas</option>
-                    <option>Vestidos</option>
-                    <option>Jaquetas</option>
-                    <option>Acessórios</option>
+                    <option>Camisetas</option><option>Calças</option><option>Bermudas</option>
+                    <option>Vestidos</option><option>Jaquetas</option><option>Acessórios</option>
                   </select>
                   <div class="invalid-feedback">Selecione uma categoria.</div>
                 </div>
@@ -127,45 +103,30 @@
                   <select class="form-select" id="tamanho" required>
                     <option value="" selected disabled>Selecione...</option>
                     <optgroup label="Alfabéticos">
-                      <option>PP</option>
-                      <option>P</option>
-                      <option>M</option>
-                      <option>G</option>
-                      <option>GG</option>
+                      <option>PP</option><option>P</option><option>M</option><option>G</option><option>GG</option>
                     </optgroup>
                     <optgroup label="Numéricos">
-                      <option>36</option>
-                      <option>38</option>
-                      <option>40</option>
-                      <option>42</option>
-                      <option>44</option>
-                      <option>46</option>
+                      <option>36</option><option>38</option><option>40</option><option>42</option><option>44</option><option>46</option>
                     </optgroup>
                   </select>
                   <div class="invalid-feedback">Selecione um tamanho.</div>
                 </div>
               </div>
 
-              <!-- Linha 2: Cores / Status -->
+              <!-- Linha 2 -->
               <div class="row g-3 mt-1">
                 <div class="col-lg-6">
                   <label class="form-label">Cores (múltiplas)</label>
                   <select class="form-select" id="cores" multiple>
-                    <option>Preto</option>
-                    <option>Branco</option>
-                    <option>Cinza</option>
-                    <option>Azul</option>
-                    <option>Vermelho</option>
-                    <option>Verde</option>
-                    <option>Bege</option>
+                    <option>Preto</option><option>Branco</option><option>Cinza</option>
+                    <option>Azul</option><option>Vermelho</option><option>Verde</option><option>Bege</option>
                   </select>
                   <div class="form-text">Use Ctrl/Cmd para selecionar várias cores.</div>
                 </div>
                 <div class="col-lg-3">
                   <label class="form-label">Status</label>
                   <select class="form-select" id="status">
-                    <option>Ativo</option>
-                    <option>Inativo</option>
+                    <option>Ativo</option><option>Inativo</option>
                   </select>
                 </div>
                 <div class="col-lg-3">
@@ -174,29 +135,20 @@
                 </div>
               </div>
 
-              <!-- Linha 3: Preços -->
+              <!-- Linha 3: preços (text + inputmode para aceitar vírgula) -->
               <div class="row g-3 mt-1">
-                <div class="col-md-3">
-                  <label class="form-label">Preço de custo (R$) <span class="text-danger">*</span></label>
-                  <input type="number" step="0.01" min="0" class="form-control" id="precoCusto" required>
-                  <div class="invalid-feedback">Informe o custo.</div>
+                <div class="col-md-6">
+                  <label class="form-label">Preço de custo (R$)</label>
+                  <input type="text" inputmode="decimal" class="form-control" id="precoCusto" placeholder="0,00">
                 </div>
-                <div class="col-md-3">
-                  <label class="form-label">Markup (%)</label>
-                  <input type="number" step="0.01" min="0" class="form-control" id="markup" placeholder="Ex.: 120">
-                </div>
-                <div class="col-md-3">
+                <div class="col-md-6">
                   <label class="form-label">Preço de venda (R$) <span class="text-danger">*</span></label>
-                  <input type="number" step="0.01" min="0" class="form-control" id="precoVenda" required>
+                  <input type="text" inputmode="decimal" class="form-control" id="precoVenda" required placeholder="0,00">
                   <div class="invalid-feedback">Informe o preço de venda.</div>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label">Margem (%)</label>
-                  <input type="text" class="form-control" id="margem" readonly>
                 </div>
               </div>
 
-              <!-- Linha 4: Fornecedor / EAN -->
+              <!-- Linha 4 -->
               <div class="row g-3 mt-1">
                 <div class="col-md-6">
                   <label class="form-label">Fornecedor</label>
@@ -208,23 +160,16 @@
                 </div>
               </div>
 
-              <!-- Linha 5: Imagens / Descrição -->
+              <!-- Linha 5 -->
               <div class="row g-3 mt-1">
-                <div class="col-lg-5">
-                  <label class="form-label">Imagens do produto</label>
-                  <input type="file" class="form-control" id="imagens" accept="image/*" multiple>
-                  <div class="form-text">JPG/PNG — você poderá pré-visualizar depois.</div>
-                </div>
-                <div class="col-lg-7">
+                <div class="col-lg-6">
                   <label class="form-label">Descrição</label>
-                  <textarea class="form-control" id="descricao" rows="5" placeholder="Tecido, modelagem, instruções de lavagem, etc."></textarea>
+                  <textarea class="form-control" id="descricao" rows="4" placeholder="Tecido, modelagem..."></textarea>
                 </div>
-              </div>
-
-              <!-- Observações -->
-              <div class="mt-3">
-                <label class="form-label">Observações (opcional)</label>
-                <input type="text" class="form-control" id="observacoes" placeholder="Ex.: numeração 36–46 sob encomenda.">
+                <div class="col-lg-6">
+                  <label class="form-label">Observações</label>
+                  <textarea class="form-control" id="observacoes" rows="4" placeholder="Anotações internas..."></textarea>
+                </div>
               </div>
             </form>
           </div>
@@ -235,9 +180,27 @@
         </div>
       </div>
     </div>
-    <!-- /Modal -->
+
+    <!-- Modal: Visualizar -->
+    <div class="modal fade" id="modalVerProduto" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="h5 mb-0">Detalhes do Produto</h2>
+            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <div id="detalhesProduto"><!-- via JS --></div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="../../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/produtos.js"></script>
 </body>
 </html>
