@@ -42,7 +42,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/user', requireAuth, userRoutes);
 app.use('/api/clientes', clienteRoutes);
 app.use('/api/fornecedores', fornecedorRoutes);
-app.use('/api/produtos', produtoRoutes);
+
 
 
 
