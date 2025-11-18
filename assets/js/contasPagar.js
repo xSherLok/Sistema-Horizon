@@ -1,8 +1,10 @@
 // ====================================================================
-// ======================== CONTAS A RECEBER ==========================
+// ========================== CONTAS A PAGAR ==========================
 // ====================================================================
 
-let clientesCache = [];
+let fornecedoresCache = [];
+
+// ------------ Utils gerais ------------
 
 function formatCurrencyBRL(value) {
   if (value == null || value === '' || isNaN(Number(value))) return 'R$ 0,00';
@@ -10,23 +12,33 @@ function formatCurrencyBRL(value) {
 }
 
 function parseDateInputToISO(value) {
+  // value vem no formato "YYYY-MM-DD" do input[type=date]
   if (!value) return null;
-  const d = new Date(value);
+  // Monta uma data "neutra" e converte pra ISO só pra o backend receber um formato padrão
+  const d = new Date(value + 'T12:00:00'); // 12h evita problema de fuso voltando um dia
   if (isNaN(d.getTime())) return null;
   return d.toISOString();
 }
 
-function isoToInputDate(value) {
+function isoToDateOnly(value) {
+  // Garante que sempre pegue a parte YYYY-MM-DD em UTC
   if (!value) return '';
   const d = new Date(value);
   if (isNaN(d.getTime())) return '';
-  return d.toISOString().slice(0, 10);
+  return d.toISOString().slice(0, 10); // "YYYY-MM-DD"
 }
 
-function statusInfoReceber(status) {
+function formatDateBR(value) {
+  const iso = isoToDateOnly(value); // "YYYY-MM-DD"
+  if (!iso) return '-';
+  const [y, m, d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+function statusInfoPagar(status) {
   switch ((status || '').toLowerCase()) {
-    case 'recebida':
-      return { text: 'Recebido', className: 'badge bg-success' };
+    case 'paga':
+      return { text: 'Pago', className: 'badge bg-success' };
     case 'vencida':
       return { text: 'Atrasado', className: 'badge bg-danger' };
     case 'cancelada':
@@ -37,17 +49,18 @@ function statusInfoReceber(status) {
   }
 }
 
-function mapStatusReceberToApi(uiStatus) {
+
+function mapStatusPagarToApi(uiStatus) {
   const s = (uiStatus || '').toLowerCase();
-  if (s.includes('receb')) return 'recebida';
+  if (s.includes('pago')) return 'paga';
   if (s.includes('atras')) return 'vencida';
   if (s.includes('cancel')) return 'cancelada';
   return 'aberta';
 }
 
-function mapStatusReceberToUi(apiStatus) {
+function mapStatusPagarToUi(apiStatus) {
   const s = (apiStatus || '').toLowerCase();
-  if (s === 'recebida') return 'Recebido';
+  if (s === 'paga') return 'Pago';
   if (s === 'vencida') return 'Atrasado';
   if (s === 'cancelada') return 'Cancelada';
   return 'Em aberto';
@@ -55,7 +68,7 @@ function mapStatusReceberToUi(apiStatus) {
 
 // ===================== LISTAGEM =====================
 
-async function carregarContasReceber(page = 1) {
+async function carregarContasPagar(page = 1) {
   const tabela = document.querySelector('.main-content table');
   if (!tabela) return;
 
@@ -66,30 +79,56 @@ async function carregarContasReceber(page = 1) {
   if (q) params.set('q', q);
 
   try {
-    const res = await api('/contas-receber?' + params.toString());
+    const res = await api('/contas-pagar?' + params.toString());
     const contas = res.data || res.items || res || [];
+    console.log('Contas a pagar recebidas:', contas);
+
     const tbody = tabela.querySelector('tbody');
     if (!tbody) return;
     tbody.innerHTML = '';
 
     contas.forEach(c => {
-      const info = statusInfoReceber(c.status);
-      const emissao = c.emissao ? new Date(c.emissao).toLocaleDateString('pt-BR') : '-';
-      const vencimento = c.vencimento ? new Date(c.vencimento).toLocaleDateString('pt-BR') : '-';
-      const recebimento = c.recebimento ? new Date(c.recebimento).toLocaleDateString('pt-BR') : '-';
+      const info = statusInfoPagar(c.status);
+
+      const vencimento = c.vencimento ? formatDateBR(c.vencimento) : '-';
+      const pagamento = c.pagamento ? formatDateBR(c.pagamento) : '-';
+
+      // tenta achar a descrição em vários campos
+      const descricao =
+        c.descricao ||
+        c.documento ||
+        c.titulo ||
+        c.nomeConta ||
+        '-';
+
+      // trata fornecedor como objeto OU como string/id
+      let fornecedorNome = '-';
+      if (c.fornecedor) {
+        if (typeof c.fornecedor === 'string') {
+          fornecedorNome = c.fornecedor; // ainda sem populate → mostra ID mesmo
+        } else {
+          fornecedorNome =
+            c.fornecedor.nome ||
+            c.fornecedor.razaoSocial ||
+            c.fornecedor.nomeFantasia ||
+            c.fornecedor.fantasia ||
+            '-';
+        }
+      } else if (c.fornecedorNome || c.nomeFornecedor) {
+        fornecedorNome = c.fornecedorNome || c.nomeFornecedor;
+      }
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${(c.cliente && c.cliente.nome) || '-'}</td>
-        <td>${c.documento || '-'}</td>
+        <td>${descricao}</td>
+        <td>${fornecedorNome}</td>
         <td>${formatCurrencyBRL(c.valor)}</td>
-        <td>${emissao}</td>
         <td>${vencimento}</td>
         <td><span class="${info.className}">${info.text}</span></td>
-        <td>${recebimento}</td>
+        <td>${pagamento}</td>
         <td class="text-end">
           <button type="button" class="btn btn-sm btn-outline-secondary" data-edit="${c._id}">Editar</button>
-          <button type="button" class="btn btn-sm btn-success ms-1" data-receber="${c._id}" ${c.status === 'recebida' ? 'disabled' : ''}>Marcar como recebido</button>
+          <button type="button" class="btn btn-sm btn-success ms-1" data-pagar="${c._id}" ${c.status === 'paga' ? 'disabled' : ''}>Marcar como pago</button>
           <button type="button" class="btn btn-sm btn-danger ms-1" data-del="${c._id}">Excluir</button>
         </td>
       `;
@@ -97,83 +136,71 @@ async function carregarContasReceber(page = 1) {
     });
   } catch (err) {
     console.error(err);
-    if (typeof showMsg === 'function') showMsg(err.message || 'Erro ao carregar contas a receber.', 'error');
+    if (typeof showMsg === 'function') showMsg(err.message || 'Erro ao carregar contas a pagar.', 'error');
   }
 }
 
 // ===================== FORM / PREENCHER =====================
 
-function preencherFormContaReceber(conta) {
-  const form = document.getElementById('form-receita');
+function preencherFormContaPagar(conta) {
+  const form = document.getElementById('form-conta');
   if (!form || !conta) return;
 
   form.dataset.id = conta._id || '';
 
-  const inputCliente = document.getElementById('recCliente');
-  const hiddenClienteId = document.getElementById('recClienteId');
+  const inputFornecedor = document.getElementById('conFornecedor');
+  const hiddenFornecedorId = document.getElementById('conFornecedorId');
 
-  const descricao = document.getElementById('recDescricao');
-  const valor = document.getElementById('recValor');
-  const emissao = document.getElementById('recEmissao');
-  const vencimento = document.getElementById('recVencimento');
-  const recebimento = document.getElementById('recRecebimento');
-  const status = document.getElementById('recStatus');
-  const forma = document.getElementById('recForma');
-  const categoria = document.getElementById('recCategoria');
-  const centro = document.getElementById('recCentroCusto');
-  const qtdParcelas = document.getElementById('recQtdParcelas');
-  const parcelaAtual = document.getElementById('recParcelaAtual');
-  const obs = document.getElementById('recObs');
-  const emailInput = document.getElementById('recEmail');
-  const telInput = document.getElementById('recTelefone');
-  const docInput = document.getElementById('recDocumento');
+  const descricao = document.getElementById('conDescricao');
+  const valor = document.getElementById('conValor');
+  const vencimento = document.getElementById('conVencimento');
+  const pagamento = document.getElementById('conPagamento');
+  const status = document.getElementById('conStatus');
+  const formaPgto = document.getElementById('conFormaPgto');
+  const centroCusto = document.getElementById('conCentroCusto');
+  const obs = document.getElementById('conObs');
 
-  if (conta.cliente) {
-    if (emailInput) emailInput.value = conta.cliente.email || '';
-    if (telInput) telInput.value = conta.cliente.telefone || conta.cliente.celular || '';
-    if (docInput) docInput.value = conta.cliente.cpfCnpj || conta.cliente.cpf || conta.cliente.cnpj || '';
+  if (conta.fornecedor) {
+    const nomeFornecedor =
+      conta.fornecedor.nome ||
+      conta.fornecedor.razaoSocial ||
+      conta.fornecedor.nomeFantasia ||
+      conta.fornecedor.fantasia ||
+      '';
+
+    if (inputFornecedor) inputFornecedor.value = nomeFornecedor;
+    if (hiddenFornecedorId) hiddenFornecedorId.value = conta.fornecedor._id || '';
   }
 
-  if (inputCliente && conta.cliente) {
-    inputCliente.value = conta.cliente.nome || '';
-  }
-  if (hiddenClienteId && conta.cliente) {
-    hiddenClienteId.value = conta.cliente._id || '';
-  }
-
-  if (descricao) descricao.value = conta.documento || '';
+  if (descricao) descricao.value = conta.descricao || conta.documento || '';
   if (valor) valor.value = conta.valor != null ? conta.valor : '';
-  if (emissao) emissao.value = isoToInputDate(conta.emissao);
-  if (vencimento) vencimento.value = isoToInputDate(conta.vencimento);
-  if (recebimento) recebimento.value = isoToInputDate(conta.recebimento);
-  if (status) status.value = mapStatusReceberToUi(conta.status);
-  if (forma) forma.value = conta.forma || 'Pix';
-  if (categoria) categoria.value = conta.categoria || '';
-  if (centro) centro.value = conta.centroCusto || '';
-  if (qtdParcelas) qtdParcelas.value = conta.qtdParcelas || 1;
-  if (parcelaAtual) parcelaAtual.value = conta.parcelaAtual || 1;
+  if (vencimento) vencimento.value = isoToDateOnly(conta.vencimento);
+  if (pagamento) pagamento.value = isoToDateOnly(conta.pagamento);
+  if (status) status.value = mapStatusPagarToUi(conta.status);
+  if (formaPgto) formaPgto.value = conta.formaPgto || conta.forma || 'Pix';
+  if (centroCusto) centroCusto.value = conta.centroCusto || '';
   if (obs) obs.value = conta.observacoes || '';
 }
 
-function limparFormContaReceber() {
-  const form = document.getElementById('form-receita');
+function limparFormContaPagar() {
+  const form = document.getElementById('form-conta');
   if (!form) return;
   form.reset();
   delete form.dataset.id;
 
-  const hiddenClienteId = document.getElementById('recClienteId');
-  if (hiddenClienteId) hiddenClienteId.value = '';
+  const hiddenFornecedorId = document.getElementById('conFornecedorId');
+  if (hiddenFornecedorId) hiddenFornecedorId.value = '';
 }
 
-// ===================== CLIENTES / AUTOCOMPLETE =====================
+// ===================== FORNECEDORES / AUTOCOMPLETE =====================
 
-async function carregarClientesCache() {
-  if (clientesCache.length > 0) return clientesCache;
+async function carregarFornecedoresCache() {
+  if (fornecedoresCache.length > 0) return fornecedoresCache;
 
   try {
-    const lista = await api('/clientes');
+    const lista = await api('/fornecedores');
 
-    console.log('Resposta bruta de /clientes:', lista); // debug
+    console.log('Resposta bruta de /fornecedores:', lista);
 
     let arr = [];
 
@@ -181,8 +208,8 @@ async function carregarClientesCache() {
       arr = lista;
     } else if (Array.isArray(lista.data)) {
       arr = lista.data;
-    } else if (Array.isArray(lista.clientes)) {
-      arr = lista.clientes;
+    } else if (Array.isArray(lista.fornecedores)) {
+      arr = lista.fornecedores;
     } else if (Array.isArray(lista.items)) {
       arr = lista.items;
     } else {
@@ -194,21 +221,20 @@ async function carregarClientesCache() {
       }
     }
 
-    clientesCache = arr;
-    console.log('Clientes carregados:', clientesCache.length, clientesCache);
-    return clientesCache;
+    fornecedoresCache = arr;
+    console.log('Fornecedores carregados:', fornecedoresCache.length, fornecedoresCache);
+    return fornecedoresCache;
   } catch (err) {
     console.error(err);
     if (typeof showMsg === 'function') {
-      showMsg('Erro ao carregar clientes para busca.', 'error');
+      showMsg('Erro ao carregar fornecedores para busca.', 'error');
     }
     return [];
   }
 }
 
-// Sugestões de clientes no autocomplete
-async function mostrarSugestoesCliente(nomeParcial) {
-  const sugestoesEl = document.getElementById('recClienteSugestoes');
+async function mostrarSugestoesFornecedor(nomeParcial) {
+  const sugestoesEl = document.getElementById('conFornecedorSugestoes');
   if (!sugestoesEl) return;
 
   const termo = (nomeParcial || '').trim().toLowerCase();
@@ -218,10 +244,12 @@ async function mostrarSugestoesCliente(nomeParcial) {
     return;
   }
 
-  const clientes = await carregarClientesCache();
+  const fornecedores = await carregarFornecedoresCache();
 
-  const filtrados = clientes
-    .filter(c => (c.nome || '').toLowerCase().includes(termo))
+  const filtrados = fornecedores
+    .filter(f =>
+      ((f.nome || f.razaoSocial || f.nomeFantasia || f.fantasia || '')).toLowerCase().includes(termo)
+    )
     .slice(0, 10);
 
   if (filtrados.length === 0) {
@@ -232,70 +260,55 @@ async function mostrarSugestoesCliente(nomeParcial) {
 
   sugestoesEl.innerHTML = '';
 
-  filtrados.forEach(c => {
+  filtrados.forEach(f => {
+    const nomeExibicao = f.nome || f.razaoSocial || f.nomeFantasia || f.fantasia || 'Fornecedor sem nome';
+    const doc = f.cpfCnpj || f.cnpj || '';
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'list-group-item list-group-item-action';
-    btn.textContent = c.nome + (c.cpfCnpj ? ` (${c.cpfCnpj})` : '');
-    btn.dataset.id = c._id;
-    btn.dataset.nome = c.nome;
+    btn.textContent = nomeExibicao + (doc ? ` (${doc})` : '');
+    btn.dataset.id = f._id;
+    btn.dataset.nome = nomeExibicao;
     sugestoesEl.appendChild(btn);
   });
 
   sugestoesEl.style.display = 'block';
 }
 
-// também deixo explícito no escopo global:
-window.mostrarSugestoesCliente = mostrarSugestoesCliente;
-
+window.mostrarSugestoesFornecedor = mostrarSugestoesFornecedor;
 
 // ===================== DOMContentLoaded =====================
 
 document.addEventListener('DOMContentLoaded', () => {
   const tabela = document.querySelector('.main-content table');
-  const form = document.getElementById('form-receita');
+  const form = document.getElementById('form-conta');
 
-  if (!tabela || !form) return; // não está na tela de contas a receber
+  if (!tabela || !form) return; // não está na tela de contas a pagar
 
-  carregarContasReceber();
+  carregarContasPagar();
 
-  // busca geral no topo
   const buscaInput = document.querySelector('.topbar input[type="text"]');
   if (buscaInput && typeof debounce === 'function') {
-    buscaInput.addEventListener('input', debounce(() => carregarContasReceber(), 400));
+    buscaInput.addEventListener('input', debounce(() => carregarContasPagar(), 400));
   }
 
-  // Autocomplete de cliente
-  const inputCliente = document.getElementById('recCliente');
-  const hiddenClienteId = document.getElementById('recClienteId');
-  const sugestoesEl = document.getElementById('recClienteSugestoes');
+  // Autocomplete de fornecedor
+  const inputFornecedor = document.getElementById('conFornecedor');
+  const hiddenFornecedorId = document.getElementById('conFornecedorId');
+  const sugestoesEl = document.getElementById('conFornecedorSugestoes');
 
-  if (inputCliente && hiddenClienteId && sugestoesEl) {
-    // digitação
-    inputCliente.addEventListener('input', () => {
-      hiddenClienteId.value = '';
-
-      if (inputCliente.value.trim().length === 0) {
-        const emailInput = document.getElementById('recEmail');
-        const telInput = document.getElementById('recTelefone');
-        const docInput = document.getElementById('recDocumento');
-
-        if (emailInput) emailInput.value = '';
-        if (telInput) telInput.value = '';
-        if (docInput) docInput.value = '';
-      }
-
-      mostrarSugestoesCliente(inputCliente.value);
+  if (inputFornecedor && hiddenFornecedorId && sugestoesEl) {
+    inputFornecedor.addEventListener('input', () => {
+      hiddenFornecedorId.value = '';
+      mostrarSugestoesFornecedor(inputFornecedor.value);
     });
 
-    // foco
-    inputCliente.addEventListener('focus', () => {
-      if (inputCliente.value.trim().length > 0) {
-        mostrarSugestoesCliente(inputCliente.value);
+    inputFornecedor.addEventListener('focus', () => {
+      if (inputFornecedor.value.trim().length > 0) {
+        mostrarSugestoesFornecedor(inputFornecedor.value);
       }
     });
 
-    // clique em sugestão
     sugestoesEl.addEventListener('click', (e) => {
       const btn = e.target.closest('button[data-id]');
       if (!btn) return;
@@ -303,28 +316,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = btn.dataset.id;
       const nome = btn.dataset.nome;
 
-      inputCliente.value = nome;
-      hiddenClienteId.value = id;
-
-      // preenche dados do cliente nos outros campos
-      const cli = (clientesCache || []).find(c => c._id === id);
-
-      if (cli) {
-        const emailInput = document.getElementById('recEmail');
-        const telInput = document.getElementById('recTelefone');
-        const docInput = document.getElementById('recDocumento');
-
-        if (emailInput) emailInput.value = cli.email || '';
-        if (telInput) telInput.value = cli.telefone || cli.celular || '';
-        if (docInput) docInput.value = cli.cpfCnpj || cli.cpf || cli.cnpj || '';
-      }
+      inputFornecedor.value = nome;
+      hiddenFornecedorId.value = id;
 
       sugestoesEl.style.display = 'none';
       sugestoesEl.innerHTML = '';
     });
 
-    // perdeu foco
-    inputCliente.addEventListener('blur', () => {
+    inputFornecedor.addEventListener('blur', () => {
       setTimeout(() => {
         sugestoesEl.style.display = 'none';
       }, 200);
@@ -335,111 +334,103 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const clienteNome = document.getElementById('recCliente')?.value.trim();
-    const clienteId = document.getElementById('recClienteId')?.value.trim();
+    const fornecedorNome = document.getElementById('conFornecedor')?.value.trim();
+    const fornecedorId = document.getElementById('conFornecedorId')?.value.trim();
 
-    const descricao = document.getElementById('recDescricao')?.value.trim();
-    const valorStr = document.getElementById('recValor')?.value.replace(',', '.');
-    const emissao = document.getElementById('recEmissao')?.value;
-    const vencimento = document.getElementById('recVencimento')?.value;
-    const recebimento = document.getElementById('recRecebimento')?.value;
-    const statusUi = document.getElementById('recStatus')?.value;
-    const forma = document.getElementById('recForma')?.value;
-    const categoria = document.getElementById('recCategoria')?.value.trim();
-    const centro = document.getElementById('recCentroCusto')?.value.trim();
-    const qtdParcelas = Number(document.getElementById('recQtdParcelas')?.value || 1);
-    const parcelaAtual = Number(document.getElementById('recParcelaAtual')?.value || 1);
-    const obs = document.getElementById('recObs')?.value.trim();
+    const descricao = document.getElementById('conDescricao')?.value.trim();
+    const valorStr = document.getElementById('conValor')?.value.replace(',', '.');
+    const vencimento = document.getElementById('conVencimento')?.value;
+    const pagamento = document.getElementById('conPagamento')?.value;
+    const statusUi = document.getElementById('conStatus')?.value;
+    const formaPgto = document.getElementById('conFormaPgto')?.value;
+    const centro = document.getElementById('conCentroCusto')?.value.trim();
+    const obs = document.getElementById('conObs')?.value.trim();
 
     const valor = Number(valorStr || 0);
 
-    if (!clienteNome || !clienteId || !descricao || !valor || !vencimento) {
+    if (!fornecedorNome || !fornecedorId || !descricao || !valor || !vencimento) {
       if (typeof showMsg === 'function') {
-        showMsg('Preencha cliente (selecionado na lista), descrição, valor e vencimento.', 'error');
+        showMsg('Preencha fornecedor (selecionado na lista), descrição, valor e vencimento.', 'error');
       }
       return;
     }
 
     const body = {
-      documento: descricao,
+      descricao,
       valor,
-      emissao: emissao ? parseDateInputToISO(emissao) : null,
       vencimento: parseDateInputToISO(vencimento),
-      recebimento: recebimento ? parseDateInputToISO(recebimento) : null,
-      status: mapStatusReceberToApi(statusUi),
-      forma,
-      categoria,
+      pagamento: pagamento ? parseDateInputToISO(pagamento) : null,
+      status: mapStatusPagarToApi(statusUi),
+      formaPgto,
       centroCusto: centro,
-      qtdParcelas,
-      parcelaAtual,
       observacoes: obs,
-      cliente: clienteId, // ID REAL do cliente
+      fornecedor: fornecedorId,
     };
 
     const id = form.dataset.id;
 
     try {
       if (id) {
-        await api('/contas-receber/' + id, {
+        await api('/contas-pagar/' + id, {
           method: 'PUT',
           body: JSON.stringify(body),
         });
-        if (typeof showMsg === 'function') showMsg('Receita atualizada com sucesso.', 'success');
+        if (typeof showMsg === 'function') showMsg('Conta atualizada com sucesso.', 'success');
       } else {
-        await api('/contas-receber', {
+        await api('/contas-pagar', {
           method: 'POST',
           body: JSON.stringify(body),
         });
-        if (typeof showMsg === 'function') showMsg('Receita cadastrada com sucesso.', 'success');
+        if (typeof showMsg === 'function') showMsg('Conta cadastrada com sucesso.', 'success');
       }
 
-      const modalEl = document.getElementById('modalNovaReceita');
+      const modalEl = document.getElementById('modalNovaConta');
       if (modalEl && window.bootstrap) {
         const modal = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
         modal.hide();
       }
 
-      limparFormContaReceber();
-      carregarContasReceber();
+      limparFormContaPagar();
+      carregarContasPagar();
     } catch (err) {
       console.error(err);
-      if (typeof showMsg === 'function') showMsg(err.message || 'Erro ao salvar receita.', 'error');
+      if (typeof showMsg === 'function') showMsg(err.message || 'Erro ao salvar conta.', 'error');
     }
   });
 
   // Clique nos botões da tabela
   tabela.addEventListener('click', async (e) => {
     const btnEdit = e.target.closest('[data-edit]');
-    const btnReceber = e.target.closest('[data-receber]');
+    const btnPagar = e.target.closest('[data-pagar]');
     const btnDel = e.target.closest('[data-del]');
 
     try {
       if (btnEdit) {
         const id = btnEdit.dataset.edit;
-        const conta = await api('/contas-receber/' + id);
-        preencherFormContaReceber(conta);
+        const conta = await api('/contas-pagar/' + id);
+        preencherFormContaPagar(conta);
 
-        const modalEl = document.getElementById('modalNovaReceita');
+        const modalEl = document.getElementById('modalNovaConta');
         if (modalEl && window.bootstrap) {
           const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
           modal.show();
         }
-      } else if (btnReceber) {
-        const id = btnReceber.dataset.receber;
-        await api(`/contas-receber/${id}/receber`, {
+      } else if (btnPagar) {
+        const id = btnPagar.dataset.pagar;
+        await api(`/contas-pagar/${id}/baixar`, {
           method: 'POST',
         });
-        if (typeof showMsg === 'function') showMsg('Receita marcada como recebida.', 'success');
-        carregarContasReceber();
+        if (typeof showMsg === 'function') showMsg('Conta marcada como paga.', 'success');
+        carregarContasPagar();
       } else if (btnDel) {
         const id = btnDel.dataset.del;
-        if (!confirm('Deseja realmente excluir este registro?')) return;
+        if (!confirm('Deseja realmente excluir esta conta?')) return;
 
-        await api('/contas-receber/' + id, {
+        await api('/contas-pagar/' + id, {
           method: 'DELETE',
         });
-        if (typeof showMsg === 'function') showMsg('Receita excluída com sucesso.', 'success');
-        carregarContasReceber();
+        if (typeof showMsg === 'function') showMsg('Conta excluída com sucesso.', 'success');
+        carregarContasPagar();
       }
     } catch (err) {
       console.error(err);
@@ -447,14 +438,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  const modalEl = document.getElementById('modalNovaReceita');
+  const modalEl = document.getElementById('modalNovaConta');
   if (modalEl) {
     modalEl.addEventListener('hidden.bs.modal', () => {
-      limparFormContaReceber();
+      limparFormContaPagar();
     });
   }
 });
 
 // Expor função principal (opcional)
-window.carregarContasReceber = carregarContasReceber;
-window.mostrarSugestoesCliente = mostrarSugestoesCliente;
+window.carregarContasPagar = carregarContasPagar;

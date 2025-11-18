@@ -61,33 +61,10 @@
                 <th>Data de vencimento</th>
                 <th>Status</th>
                 <th>Data de pagamento</th>
+                <th class="text-end">Ações</th> 
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Energia elétrica</td>
-                <td>Copel</td>
-                <td>R$ 1.200,00</td>
-                <td>10/10/2025</td>
-                <td><span class="badge bg-warning text-dark">Em aberto</span></td>
-                <td>-</td>
-              </tr>
-              <tr>
-                <td>Compra de tecidos</td>
-                <td>Tecidos Brasil LTDA</td>
-                <td>R$ 8.500,00</td>
-                <td>05/10/2025</td>
-                <td><span class="badge bg-success">Pago</span></td>
-                <td>04/10/2025</td>
-              </tr>
-              <tr>
-                <td>Água</td>
-                <td>Sanepar</td>
-                <td>R$ 600,00</td>
-                <td>12/10/2025</td>
-                <td><span class="badge bg-warning text-dark">Em aberto</span></td>
-                <td>-</td>
-              </tr>
             </tbody>
           </table>
         </div>
@@ -112,9 +89,21 @@
                   <input type="text" class="form-control" id="conDescricao" required>
                 </div>
                 <div class="col-lg-6">
-                  <label class="form-label">Fornecedor</label>
-                  <input type="text" class="form-control" id="conFornecedor" placeholder="Fornecedor relacionado">
+                  <label class="form-label">Fornecedor <span class="text-danger">*</span></label>
+                  <div class="position-relative">
+                    <input type="text" class="form-control" id="conFornecedor"
+                      placeholder="Nome/Razão social do fornecedor" autocomplete="off" required>
+                    <div class="invalid-feedback">Informe o fornecedor.</div>
+
+                    <!-- Sugestões de fornecedores -->
+                    <div id="conFornecedorSugestoes" class="list-group position-absolute w-100"
+                      style="z-index:1055; max-height:200px; overflow-y:auto; display:none;"></div>
+
+                    <!-- ID real do fornecedor -->
+                    <input type="hidden" id="conFornecedorId">
+                  </div>
                 </div>
+
               </div>
 
               <div class="row g-3 mt-1">
