@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8" />
   <title>Clientes</title>
@@ -8,6 +9,7 @@
   <link rel="stylesheet" href="../../assets/css/avatar.css">
   <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.min.css">
 </head>
+
 <body>
   <!-- Sidebar -->
   <aside class="sidebar">
@@ -48,7 +50,8 @@
       <div class="card-body">
         <div class="d-flex align-items-center justify-content-between mb-3">
           <h3 class="mb-0">Clientes cadastrados</h3>
-          <button id="novoClienteBtn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCliente">
+          <button id="novoClienteBtn" type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#modalCliente">
             Novo cliente
           </button>
         </div>
@@ -115,7 +118,8 @@
                 </div>
                 <div class="col-lg-3">
                   <label class="form-label">CPF/CNPJ</label>
-                  <input type="text" class="form-control" name="cpfCnpj" id="cliDocumento" placeholder="___.___.___-__ / __.___.___/____-__">
+                  <input type="text" class="form-control" name="cpfCnpj" id="cliDocumento"
+                    placeholder="___.___.___-__ / __.___.___/____-__">
                 </div>
               </div>
 
@@ -168,12 +172,33 @@
                   <label class="form-label">UF</label>
                   <select class="form-select" name="uf" id="cliUF">
                     <option value="" selected>--</option>
-                    <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option>
-                    <option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option>
-                    <option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option>
-                    <option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
-                    <option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option>
-                    <option>SE</option><option>TO</option>
+                    <option>AC</option>
+                    <option>AL</option>
+                    <option>AP</option>
+                    <option>AM</option>
+                    <option>BA</option>
+                    <option>CE</option>
+                    <option>DF</option>
+                    <option>ES</option>
+                    <option>GO</option>
+                    <option>MA</option>
+                    <option>MT</option>
+                    <option>MS</option>
+                    <option>MG</option>
+                    <option>PA</option>
+                    <option>PB</option>
+                    <option>PR</option>
+                    <option>PE</option>
+                    <option>PI</option>
+                    <option>RJ</option>
+                    <option>RN</option>
+                    <option>RS</option>
+                    <option>RO</option>
+                    <option>RR</option>
+                    <option>SC</option>
+                    <option>SP</option>
+                    <option>SE</option>
+                    <option>TO</option>
                   </select>
                 </div>
               </div>
@@ -181,7 +206,8 @@
               <!-- Observações -->
               <div class="mt-3">
                 <label class="form-label">Observações</label>
-                <textarea class="form-control" name="observacoes" id="cliObs" rows="3" placeholder="Notas internas sobre o cliente..."></textarea>
+                <textarea class="form-control" name="observacoes" id="cliObs" rows="3"
+                  placeholder="Notas internas sobre o cliente..."></textarea>
               </div>
             </form>
           </div>
@@ -197,5 +223,7 @@
 
   <script src="../../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="../../assets/js/script.js"></script>
+  <script src="../../assets/js/clientes.js"></script>
 </body>
+
 </html>
