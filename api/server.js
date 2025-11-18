@@ -14,6 +14,10 @@ import userRoutes from './src/routes/user.routes.js';
 import { requireAuth } from './src/middleware/auth.js';
 import clienteRoutes from './src/routes/cliente.routes.js';
 import fornecedorRoutes from './src/routes/fornecedor.routes.js';
+import contaReceberRoutes from './src/routes/conta-receber.routes.js';
+import contaPagarRoutes from './src/routes/conta-pagar.routes.js';
+import vendaRoutes from './src/routes/venda.routes.js';
+import produtoRoutes from './src/routes/produto.routes.js';
 
 dotenv.config();
 
@@ -42,6 +46,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/user', requireAuth, userRoutes);
 app.use('/api/clientes', clienteRoutes);
 app.use('/api/fornecedores', fornecedorRoutes);
+app.use('/api/contas-receber', contaReceberRoutes);
+app.use('/api/contas-pagar', contaPagarRoutes);
+app.use('/api/vendas', vendaRoutes);
+app.use('/api/produtos', produtoRoutes);
 
 
 
