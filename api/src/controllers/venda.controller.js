@@ -67,3 +67,12 @@ export async function cancelar(req,res){ try{
 export async function remove(req,res){ try{
   await Venda.findByIdAndDelete(req.params.id); res.json({ok:true});
 }catch(e){ res.status(400).json({error:e.message}); } }
+export const ultimasVendas = async (req, res) => {
+    try {
+        const vendas = await Venda.find().sort({ data: -1 }).limit(10);
+        res.json(vendas);
+    } catch (e) {
+        res.status(500).json({ erro: "Erro ao buscar vendas" });
+    }
+};
+

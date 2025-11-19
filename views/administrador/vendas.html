@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <title>Vendas</title>
@@ -7,36 +8,37 @@
   <link rel="stylesheet" href="../../assets/css/sidebar.css">
   <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.min.css">
 </head>
+
 <body>
   <!-- Sidebar -->
   <aside class="sidebar">
-      <div class="logo">LOGO</div>
-      <ul class="menu">
-        <li><a href="dashboard.html">Dashboard</a></li>
-        <li class="active"><a href="vendas.html">Vendas</a></li>
-        <li><a href="produto.html">Produtos</a></li>
-        <li><a href="clientes.html">Clientes</a></li>
-        <li><a href="fornecedores.html">Fornecedores</a></li>
-        <li><a href="contas-a-pagar.html">Contas a Pagar</a></li>
-        <li><a href="contas-a-receber.html">Contas a Receber</a></li>
-      </ul>
-      <div class="bottom-menu">
-        <a href="configuracoes.html">Configurações</a>
-        <a href="#">Sair</a>
-      </div>
+    <div class="logo">LOGO</div>
+    <ul class="menu">
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li class="active"><a href="vendas.html">Vendas</a></li>
+      <li><a href="produto.html">Produtos</a></li>
+      <li><a href="clientes.html">Clientes</a></li>
+      <li><a href="fornecedores.html">Fornecedores</a></li>
+      <li><a href="contas-a-pagar.html">Contas a Pagar</a></li>
+      <li><a href="contas-a-receber.html">Contas a Receber</a></li>
+    </ul>
+    <div class="bottom-menu">
+      <a href="configuracoes.html">Configurações</a>
+      <a href="#">Sair</a>
+    </div>
   </aside>
 
   <!-- Conteúdo principal -->
   <div class="main-content">
     <!-- Header -->
-     <header class="topbar">
-        <h1>Vendas</h1>
-        <input type="text" placeholder="Pesquisar...">
-        <div class="user">
-          <span>Seu Nome</span>
-          <div class="avatar">👤</div>
-        </div>
-      </header>
+    <header class="topbar">
+      <h1>Vendas</h1>
+      <input type="text" placeholder="Pesquisar...">
+      <div class="user">
+        <span>Seu Nome</span>
+        <div class="avatar">👤</div>
+      </div>
+    </header>
 
     <!-- Gráfico -->
     <div class="charts">[Gráfico de vendas será exibido aqui futuramente]</div>
@@ -45,7 +47,8 @@
     <div class="table">
       <div class="table-header">
         <h3>Últimas Vendas</h3>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Nova Venda</button>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Nova
+          Venda</button>
       </div>
       <table>
         <thead>
@@ -56,21 +59,15 @@
             <th>Data</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="tabelaVendas">
           <tr>
-            <td>João Silva</td>
-            <td>Notebook</td>
-            <td>R$ 3.000</td>
-            <td>25/09/2025</td>
-          </tr>
-          <tr>
-            <td>Maria Oliveira</td>
-            <td>Mouse</td>
-            <td>R$ 120</td>
-            <td>24/09/2025</td>
+            <td colspan="4" class="text-center text-muted">
+              Carregando últimas vendas...
+            </td>
           </tr>
         </tbody>
       </table>
+
     </div>
   </div>
 
@@ -89,8 +86,15 @@
               <form id="form-venda" class="needs-validation" novalidate>
                 <div class="mb-3">
                   <label for="buscarProduto" class="form-label">Produto <span class="req">*</span></label>
-                  <input type="text" class="form-control" id="buscarProduto" placeholder="Busque pelo nome ou código..." autocomplete="off">
+                  <input type="text" class="form-control" id="buscarProduto" placeholder="Busque pelo nome ou código..."
+                    autocomplete="off">
+
+                  <!-- ID real do produto selecionado -->
+                  <input type="hidden" id="produtoId">
+
+                  <!-- Sugestões de produtos -->
                   <div id="sugestoes" class="list-group mt-2 d-none"></div>
+
                 </div>
                 <div class="row g-3 align-items-end">
                   <div class="col-md-4">
@@ -102,7 +106,8 @@
                     <input type="text" class="form-control" id="precoUnit" readonly>
                   </div>
                   <div class="col-md-4">
-                    <button type="button" id="btnAdicionar" class="btn btn-info text-dark fw-semibold w-100">Adicionar</button>
+                    <button type="button" id="btnAdicionar"
+                      class="btn btn-info text-dark fw-semibold w-100">Adicionar</button>
                   </div>
                 </div>
 
@@ -143,12 +148,16 @@
                     <th>Qtd</th>
                     <th>Preço</th>
                     <th>Total</th>
+                    <th>Ações</th> <!-- NOVA COLUNA -->
                   </tr>
                 </thead>
                 <tbody id="tabelaCarrinho">
-                  <tr><td colspan="4" class="text-center text-muted">Nenhum item</td></tr>
+                  <tr>
+                    <td colspan="5" class="text-center text-muted">Nenhum item</td>
+                  </tr>
                 </tbody>
               </table>
+
               <div class="mt-3">
                 <p><strong>Subtotal:</strong> <span id="subtotal">R$ 0,00</span></p>
                 <p><strong>Desconto:</strong> <span id="desconto">R$ 0,00</span></p>
@@ -168,4 +177,5 @@
   <script src="../../assets/js/vendas.js"></script>
   <script src="../../assets/js/script.js"></script>
 </body>
+
 </html>

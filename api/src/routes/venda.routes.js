@@ -10,4 +10,5 @@ router.put('/:id', update);
 router.post('/:id/finalizar', finalizar);
 router.post('/:id/cancelar', cancelar);
 router.delete('/:id', remove);
+router.get("/vendas/ultimas", ultimasVendas);
 export default router;
