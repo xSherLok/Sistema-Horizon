@@ -67,12 +67,21 @@ export async function cancelar(req,res){ try{
 export async function remove(req,res){ try{
   await Venda.findByIdAndDelete(req.params.id); res.json({ok:true});
 }catch(e){ res.status(400).json({error:e.message}); } }
+// src/controllers/venda.controller.js
+
 export const ultimasVendas = async (req, res) => {
     try {
-        const vendas = await Venda.find().sort({ data: -1 }).limit(10);
-        res.json(vendas);
+        const vendas = await Venda.find()
+            .sort({ createdAt: -1 })
+            .limit(20)
+            .populate("cliente")
+            .populate("itens.produto");
+
+        res.status(200).json(vendas);
     } catch (e) {
-        res.status(500).json({ erro: "Erro ao buscar vendas" });
+        console.error(e);
+        res.status(500).json({ error: "Erro ao carregar últimas vendas" });
     }
 };
+
 

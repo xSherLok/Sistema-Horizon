@@ -57,16 +57,18 @@
             <th>Produto</th>
             <th>Valor</th>
             <th>Data</th>
+            <th>Ações</th>
           </tr>
         </thead>
         <tbody id="tabelaVendas">
           <tr>
-            <td colspan="4" class="text-center text-muted">
+            <td colspan="5" class="text-center text-muted">
               Carregando últimas vendas...
             </td>
           </tr>
         </tbody>
       </table>
+
 
     </div>
   </div>
@@ -84,6 +86,19 @@
             <!-- Coluna Formulário -->
             <div class="col-lg-7">
               <form id="form-venda" class="needs-validation" novalidate>
+                <div class="mb-3">
+                  <label for="clienteNome" class="form-label">Cliente (opcional)</label>
+                  <input type="text" class="form-control" id="clienteNome" placeholder="Nome do cliente (opcional)"
+                    autocomplete="off">
+
+                  <!-- ID real do cliente selecionado -->
+                  <input type="hidden" id="clienteId">
+
+                  <!-- Sugestões de clientes -->
+                  <div id="sugestoesCliente" class="list-group mt-2 d-none"></div>
+                </div>
+
+
                 <div class="mb-3">
                   <label for="buscarProduto" class="form-label">Produto <span class="req">*</span></label>
                   <input type="text" class="form-control" id="buscarProduto" placeholder="Busque pelo nome ou código..."
@@ -172,6 +187,27 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal Ver Venda -->
+  <div class="modal fade" id="modalVerVenda" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content glass text-dark border-soft">
+        <div class="modal-header border-0">
+          <h2 class="h5 mb-0">Detalhes da Venda</h2>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="detalhesVendaConteudo">
+            <!-- Preenchido via JavaScript -->
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <script src="../../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="../../assets/js/vendas.js"></script>
