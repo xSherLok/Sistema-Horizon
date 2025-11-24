@@ -1,79 +1,98 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
-  <link rel="stylesheet" href="../../assets/css/alladm.css">
-  <link rel="stylesheet" href="../../assets/bootstrap/css/">
-
-  
-  
+  <link rel="stylesheet" href="../../assets/css/telas.css">
+  <link rel="stylesheet" href="../../assets/css/sidebar.css">
+  <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.min.css">
 </head>
+
 <body>
-  <div class="container">
-    <!-- Sidebar -->
+  <!-- Sidebar -->
   <aside class="sidebar">
-      <div class="logo">LOGO</div>
-      <ul class="menu">
-        <li class="active"><a href="dashboard.html">Dashboard</a></li>
-        <li><a href="vendas.html">Vendas</a></li>
-        <li><a href="produto.html">Produtos</a></li>
-        <li><a href="clientes.html">Clientes</a></li>
-        <li><a href="fornecedores.html">Fornecedores</a></li>
-        <li><a href="contas-a-pagar.html">Contas a Pagar</a></li>
-        <li><a href="contas-a-receber.html">Contas a Receber</a></li>
-      </ul>
-      <div class="bottom-menu">
-        <a href="configuracoes.html">Configurações</a>
-        <a href="#">Sair</a>
-      </div>
+    <div class="logo">LOGO</div>
+    <ul class="menu">
+      <li class="active"><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="vendas.html">Vendas</a></li>
+      <li><a href="produto.html">Produtos</a></li>
+      <li><a href="clientes.html">Clientes</a></li>
+      <li><a href="fornecedores.html">Fornecedores</a></li>
+      <li><a href="contas-a-pagar.html">Contas a Pagar</a></li>
+      <li><a href="contas-a-receber.html">Contas a Receber</a></li>
+    </ul>
+    <div class="bottom-menu">
+      <a href="configuracoes.html">Configurações</a>
+      <a href="#">Sair</a>
+    </div>
   </aside>
 
-    <!-- Conteúdo principal -->
-    <main class="main">
-      <header class="topbar">
-        <h1>Dashboard</h1>
-        <input type="text" placeholder="Pesquisar...">
-        <div class="user">
-          <span>Seu Nome</span>
-          <div class="avatar">👤</div>
-        </div>
-      </header>
+  <!-- Conteúdo principal -->
+  <div class="main-content">
+    <!-- Header -->
+    <header class="topbar">
+      <h1>Dashboard</h1>
+      <input type="text" placeholder="Pesquisar...">
+      <div class="user">
+        <span>Seu Nome</span>
+        <div class="avatar">👤</div>
+      </div>
+    </header>
 
-      <!-- Cards principais -->
-      <section class="cards">
-        <div class="card green">
-          <h3>R$ 513</h3>
-          <p>Total Faturado</p>
-        </div>
-        <div class="card yellow">
-          <h3>321</h3>
-          <p>Transações</p>
-        </div>
-        <div class="card red">
-          <h3>564</h3>
-          <p>Produtos</p>
-        </div>
-        <div class="card blue">
-          <h3>254</h3>
-          <p>Clientes</p>
-        </div>
-      </section>
+    <!-- Cards principais -->
+    <section class="cards">
+      <div class="card green">
+        <h3 id="cardTotalFaturado">R$ 0,00</h3>
+        <p>Total Faturado</p>
+      </div>
+      <div class="card yellow">
+        <h3 id="cardTotalTransacoes">0</h3>
+        <p>Transações</p>
+      </div>
+      <div class="card red">
+        <h3 id="cardTotalProdutos">0</h3>
+        <p>Produtos</p>
+      </div>
+      <div class="card blue">
+        <h3 id="cardTotalClientes">0</h3>
+        <p>Clientes</p>
+      </div>
+    </section>
 
-      <!-- Exemplo de duas colunas -->
-      <section class="grid">
-        <div class="box">
-          <h3>Crescimento da Receita</h3>
-          <p>(Aqui você pode colocar um gráfico futuramente)</p>
+    <!-- Gráficos -->
+    <section class="charts-row">
+      <div class="table">
+        <h3>Crescimento da Receita</h3>
+        <p class="text-muted" style="margin-bottom: 10px; font-size: 0.9rem;">
+          Faturamento por dia/mês
+        </p>
+        <div style="width: 100%; height: 340px;">
+          <canvas id="graficoReceita"></canvas>
         </div>
-        <div class="box">
-          <h3>Produtos Mais Vendidos</h3>
-          <p>(Aqui você pode colocar um gráfico de pizza futuramente)</p>
+      </div>
+
+      <div class="table">
+        <h3>Produtos Mais Vendidos</h3>
+        <p class="text-muted" style="margin-bottom: 10px; font-size: 0.9rem;">
+          Top produtos por quantidade vendida
+        </p>
+        <div style="width: 100%; height: 340px;">
+          <canvas id="graficoTopProdutos"></canvas>
         </div>
-      </section>
-    </main>
+      </div>
+    </section>
   </div>
+
+    <!-- Chart.js local (evita bloqueio por CSP) -->
+  <script src="../../assets/js/chart.umd.min.js"></script>
+
+  <!-- Helpers globais (api, showMsg, etc.) -->
   <script src="../../assets/js/script.js"></script>
+
+  <!-- JS específico do dashboard -->
+  <script src="../../assets/js/dashboard.js"></script>
+
 </body>
+
 </html>

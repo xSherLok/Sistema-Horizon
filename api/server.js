@@ -18,6 +18,8 @@ import contaReceberRoutes from './src/routes/conta-receber.routes.js';
 import contaPagarRoutes from './src/routes/conta-pagar.routes.js';
 import vendaRoutes from './src/routes/venda.routes.js';
 import produtoRoutes from './src/routes/produto.routes.js';
+import dashboardRoutes from './src/routes/dashboard.routes.js';
+
 
 dotenv.config();
 
@@ -50,6 +52,8 @@ app.use('/api/contas-receber', contaReceberRoutes);
 app.use('/api/contas-pagar', contaPagarRoutes);
 app.use('/api/vendas', vendaRoutes);
 app.use('/api/produtos', produtoRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+
 
 
 

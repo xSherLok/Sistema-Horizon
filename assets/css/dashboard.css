@@ -68,6 +68,11 @@ body {
 }
 
 /* ===== Cards ===== */
+
+.box canvas {
+  width: 100%;
+  height: 320px;
+}
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
