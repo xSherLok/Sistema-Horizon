@@ -128,33 +128,127 @@ var __fornecedoresCache = [];
 var __fornecedorMapByName = new Map();
 
 async function carregarFornecedoresCombo() {
-  var input = document.querySelector('#fornecedor');
+  const input = document.querySelector('#fornecedor');
   if (!input) return;
-  try {
-    var token = localStorage.getItem('token');
-    var res = await fetch('/api/fornecedores?limit=1000', { headers: { 'Authorization': 'Bearer ' + token } });
-    if (!res.ok) { console.warn('/api/fornecedores', res.status); return; }
-    var j = await res.json();
-    var arr = Array.isArray(j) ? j : (Array.isArray(j.data) ? j.data : []);
-    __fornecedoresCache = arr; __fornecedorMapByName = new Map();
 
-    var dl = document.getElementById('listaFornecedores');
-    if (!dl) { dl = document.createElement('datalist'); dl.id = 'listaFornecedores'; document.body.appendChild(dl); }
-    dl.innerHTML = arr.map(function (f) {
-      var nome = f.nome || f.razaoSocial || f.fantasia || '';
-      if (nome) __fornecedorMapByName.set(nome, f._id);
-      return nome ? '<option value="' + nome + '"></option>' : '';
-    }).join('');
-    input.setAttribute('list', 'listaFornecedores');
-  } catch (e) { console.error('fornecedores erro', e); }
+  try {
+    const token = localStorage.getItem('token');
+    const params = new URLSearchParams({
+      page: 1,
+      limit: 1000,
+      // se quiser só ativos:
+      // status: 'ativo'
+    });
+
+    const res = await fetch('/api/fornecedores?' + params.toString(), {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+
+    if (!res.ok) {
+      console.warn('/api/fornecedores', res.status);
+      return;
+    }
+
+    const j = await res.json();
+
+    // AQUI é a diferença: pega j.items
+    const arr = Array.isArray(j)
+      ? j
+      : (Array.isArray(j.items) ? j.items : []);
+
+    __fornecedoresCache = arr;
+    __fornecedorMapByName = new Map();
+
+    // Preenche o map nome -> _id (usado pelo __resolveFornecedorIdFromInput)
+    arr.forEach(f => {
+      const nome =
+        f.nome ||
+        f.razaoSocial ||
+        f.nomeFantasia ||
+        f.fantasia ||
+        '';
+
+      if (nome) {
+        __fornecedorMapByName.set(nome, f._id);
+      }
+    });
+  } catch (e) {
+    console.error('fornecedores erro', e);
+  }
 }
+
 function __resolveFornecedorIdFromInput() {
+  // 1) Se já temos o ID no hidden, usa ele
+  var hidden = document.querySelector('#fornecedorId');
+  if (hidden && hidden.value) {
+    return hidden.value;
+  }
+
+  // 2) Fallback: tenta resolver pelo texto digitado (nome)
   var val = (document.querySelector('#fornecedor') || {}).value;
   if (!val) return null;
-  if (__fornecedorMapByName.has(val)) return __fornecedorMapByName.get(val);
-  var f = __fornecedoresCache.find(function (x) { return (x.nome || '').toLowerCase() === val.toLowerCase(); });
+
+  if (__fornecedorMapByName.has(val)) {
+    return __fornecedorMapByName.get(val);
+  }
+
+  var f = __fornecedoresCache.find(function (x) {
+    return ((x.nome || x.razaoSocial || x.nomeFantasia || x.fantasia || '') || '')
+      .toLowerCase() === val.toLowerCase();
+  });
+
   return f ? f._id : null;
 }
+
+/* ========= Autocomplete de fornecedor (tela de produtos) ========= */
+
+async function mostrarSugestoesFornecedorProduto(nomeParcial) {
+  var sugestoesEl = document.getElementById('fornecedorSugestoes');
+  if (!sugestoesEl) return;
+
+  var termo = (nomeParcial || '').trim().toLowerCase();
+  if (!termo) {
+    sugestoesEl.style.display = 'none';
+    sugestoesEl.innerHTML = '';
+    return;
+  }
+
+  // Garante que o cache está carregado
+  if (!__fornecedoresCache.length) {
+    await carregarFornecedoresCombo();
+  }
+
+  var filtrados = __fornecedoresCache
+    .filter(function (f) {
+      var nome = (f.nome || f.razaoSocial || f.nomeFantasia || f.fantasia || '');
+      return nome.toLowerCase().includes(termo);
+    })
+    .slice(0, 10);
+
+  if (!filtrados.length) {
+    sugestoesEl.style.display = 'none';
+    sugestoesEl.innerHTML = '';
+    return;
+  }
+
+  sugestoesEl.innerHTML = '';
+
+  filtrados.forEach(function (f) {
+    var nomeExibicao = f.nome || f.razaoSocial || f.nomeFantasia || f.fantasia || 'Fornecedor sem nome';
+    var doc = f.cpfCnpj || f.cnpj || '';
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'list-group-item list-group-item-action';
+    btn.textContent = nomeExibicao + (doc ? ' (' + doc + ')' : '');
+    btn.dataset.id = f._id;
+    btn.dataset.nome = nomeExibicao;
+    sugestoesEl.appendChild(btn);
+  });
+
+  sugestoesEl.style.display = 'block';
+}
+
+
 
 /* ========= Salvar produto (usa _id do fornecedor) ========= */
 async function salvarProduto(e) {
@@ -197,13 +291,62 @@ window.salvarProduto = salvarProduto;
 document.addEventListener('DOMContentLoaded', function () {
   try {
     if (document.querySelector('#tbodyProdutos') || document.querySelector('#form-produto')) {
+      // Carrega cache de fornecedores
       carregarFornecedoresCombo();
+
+      // Lista inicial de produtos
       setTimeout(function () { carregarProdutos(1); }, 0);
+
+      // Busca de produtos
       var inp = document.querySelector('#buscaProdutos');
-      if (inp) inp.addEventListener('input', function () { carregarProdutos(1); });
+      if (inp) {
+        inp.addEventListener('input', function () { carregarProdutos(1); });
+      }
+
+      // ===== Autocomplete fornecedor (igual Contas a Pagar) =====
+      var inputFornecedor = document.getElementById('fornecedor');
+      var hiddenFornecedorId = document.getElementById('fornecedorId');
+      var sugestoesEl = document.getElementById('fornecedorSugestoes');
+
+      if (inputFornecedor && hiddenFornecedorId && sugestoesEl) {
+        // Quando digitar, limpa o ID e mostra sugestões
+        inputFornecedor.addEventListener('input', function () {
+          hiddenFornecedorId.value = '';
+          mostrarSugestoesFornecedorProduto(inputFornecedor.value);
+        });
+
+        // Ao focar, se já tiver texto, mostra sugestões de novo
+        inputFornecedor.addEventListener('focus', function () {
+          if (inputFornecedor.value.trim().length > 0) {
+            mostrarSugestoesFornecedorProduto(inputFornecedor.value);
+          }
+        });
+
+        // Clique em uma sugestão
+        sugestoesEl.addEventListener('click', function (e) {
+          var btn = e.target.closest('button[data-id]');
+          if (!btn) return;
+
+          inputFornecedor.value = btn.dataset.nome;
+          hiddenFornecedorId.value = btn.dataset.id;
+
+          sugestoesEl.style.display = 'none';
+          sugestoesEl.innerHTML = '';
+        });
+
+        // Ao sair do campo, some com as sugestões (pequeno delay pra permitir o clique)
+        inputFornecedor.addEventListener('blur', function () {
+          setTimeout(function () {
+            sugestoesEl.style.display = 'none';
+          }, 200);
+        });
+      }
     }
-  } catch (e) { console.error('Init produtos erro', e); }
+  } catch (e) {
+    console.error('Init produtos erro', e);
+  }
 });
+
 
 
 /* ========= Fix: alvos genéricos da modal (VER) ========= */
@@ -281,6 +424,20 @@ window.editarProduto = async function editarProduto(id) {
     setVal('#ean', p.ean);
     setVal('#descricao', p.descricao);
     setVal('#observacoes', p.observacoes);
+
+    var hiddenFornecedor = document.querySelector('#fornecedorId');
+    if (hiddenFornecedor) {
+      // Se vier populado no getById
+      if (p.fornecedor && p.fornecedor._id) {
+        hiddenFornecedor.value = p.fornecedor._id;
+      } else if (typeof p.fornecedor === 'string') {
+        // Caso o back retorne só o ObjectId
+        hiddenFornecedor.value = p.fornecedor;
+      } else {
+        hiddenFornecedor.value = '';
+      }
+    }
+
 
     const coresSel = document.querySelector('#cores');
     if (coresSel && Array.isArray(p.cores)) {

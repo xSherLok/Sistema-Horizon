@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8" />
   <title>Produtos</title>
@@ -8,6 +9,7 @@
   <link rel="stylesheet" href="../../assets/css/avatar.css">
   <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.min.css">
 </head>
+
 <body>
   <!-- Sidebar -->
   <aside class="sidebar">
@@ -48,7 +50,8 @@
       <div class="card-body">
         <div class="d-flex align-items-center justify-content-between mb-3">
           <h3 class="mb-0">Produtos Cadastrados</h3>
-          <button id="novoProdutoBtn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNovoProduto">
+          <button id="novoProdutoBtn" type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#modalNovoProduto">
             Novo produto
           </button>
         </div>
@@ -93,8 +96,12 @@
                   <label class="form-label">Categoria <span class="text-danger">*</span></label>
                   <select class="form-select" id="categoria" required>
                     <option value="" selected disabled>Selecione...</option>
-                    <option>Camisetas</option><option>Calças</option><option>Bermudas</option>
-                    <option>Vestidos</option><option>Jaquetas</option><option>Acessórios</option>
+                    <option>Camisetas</option>
+                    <option>Calças</option>
+                    <option>Bermudas</option>
+                    <option>Vestidos</option>
+                    <option>Jaquetas</option>
+                    <option>Acessórios</option>
                   </select>
                   <div class="invalid-feedback">Selecione uma categoria.</div>
                 </div>
@@ -103,10 +110,19 @@
                   <select class="form-select" id="tamanho" required>
                     <option value="" selected disabled>Selecione...</option>
                     <optgroup label="Alfabéticos">
-                      <option>PP</option><option>P</option><option>M</option><option>G</option><option>GG</option>
+                      <option>PP</option>
+                      <option>P</option>
+                      <option>M</option>
+                      <option>G</option>
+                      <option>GG</option>
                     </optgroup>
                     <optgroup label="Numéricos">
-                      <option>36</option><option>38</option><option>40</option><option>42</option><option>44</option><option>46</option>
+                      <option>36</option>
+                      <option>38</option>
+                      <option>40</option>
+                      <option>42</option>
+                      <option>44</option>
+                      <option>46</option>
                     </optgroup>
                   </select>
                   <div class="invalid-feedback">Selecione um tamanho.</div>
@@ -118,15 +134,21 @@
                 <div class="col-lg-6">
                   <label class="form-label">Cores (múltiplas)</label>
                   <select class="form-select" id="cores" multiple>
-                    <option>Preto</option><option>Branco</option><option>Cinza</option>
-                    <option>Azul</option><option>Vermelho</option><option>Verde</option><option>Bege</option>
+                    <option>Preto</option>
+                    <option>Branco</option>
+                    <option>Cinza</option>
+                    <option>Azul</option>
+                    <option>Vermelho</option>
+                    <option>Verde</option>
+                    <option>Bege</option>
                   </select>
                   <div class="form-text">Use Ctrl/Cmd para selecionar várias cores.</div>
                 </div>
                 <div class="col-lg-3">
                   <label class="form-label">Status</label>
                   <select class="form-select" id="status">
-                    <option>Ativo</option><option>Inativo</option>
+                    <option>Ativo</option>
+                    <option>Inativo</option>
                   </select>
                 </div>
                 <div class="col-lg-3">
@@ -143,7 +165,8 @@
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Preço de venda (R$) <span class="text-danger">*</span></label>
-                  <input type="text" inputmode="decimal" class="form-control" id="precoVenda" required placeholder="0,00">
+                  <input type="text" inputmode="decimal" class="form-control" id="precoVenda" required
+                    placeholder="0,00">
                   <div class="invalid-feedback">Informe o preço de venda.</div>
                 </div>
               </div>
@@ -152,8 +175,19 @@
               <div class="row g-3 mt-1">
                 <div class="col-md-6">
                   <label class="form-label">Fornecedor</label>
-                  <input type="text" class="form-control" id="fornecedor" placeholder="Ex.: Fornecedor XYZ">
+                  <div class="position-relative">
+                    <input type="text" class="form-control" id="fornecedor" placeholder="Ex.: Fornecedor XYZ"
+                      autocomplete="off">
+
+                    <!-- Sugestões de fornecedores -->
+                    <div id="fornecedorSugestoes" class="list-group position-absolute w-100"
+                      style="z-index:1055; max-height:200px; overflow-y:auto; display:none;"></div>
+
+                    <!-- ID real do fornecedor -->
+                    <input type="hidden" id="fornecedorId">
+                  </div>
                 </div>
+
                 <div class="col-md-6">
                   <label class="form-label">Código de barras (EAN)</label>
                   <input type="text" class="form-control" id="ean" placeholder="Opcional">
@@ -168,7 +202,8 @@
                 </div>
                 <div class="col-lg-6">
                   <label class="form-label">Observações</label>
-                  <textarea class="form-control" id="observacoes" rows="4" placeholder="Anotações internas..."></textarea>
+                  <textarea class="form-control" id="observacoes" rows="4"
+                    placeholder="Anotações internas..."></textarea>
                 </div>
               </div>
             </form>
@@ -204,4 +239,5 @@
   <script src="../../assets/js/script.js"></script>
   <script src="../../assets/js/produtos.js"></script>
 </body>
+
 </html>

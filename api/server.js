@@ -105,7 +105,7 @@ app.get('*', (req, res, next) => {
 });
 
 // ====== MONGO & SERVER START ======
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 const uri = process.env.MONGO_URI;
 
 if (!uri) {
