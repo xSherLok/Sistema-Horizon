@@ -17,15 +17,25 @@ export async function resumo(req, res) {
       },
     ]);
 
-    const [totalProdutos, totalClientes] = await Promise.all([
-      Produto.countDocuments({}),
-      Cliente.countDocuments({}),
+    // Soma do estoque de todos os produtos (trata null/undefined como 0)
+    const [totalEstoqueAgg, totalClientes] = await Promise.all([
+      Produto.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalEstoque: { $sum: { $ifNull: ['$estoque', 0] } }
+          }
+        }
+      ]),
+      Cliente.countDocuments({})
     ]);
+
+    const totalEstoque = totalEstoqueAgg[0]?.totalEstoque || 0;
 
     res.json({
       totalFaturado: agregadoVendas?.totalFaturado || 0,
       totalTransacoes: agregadoVendas?.totalTransacoes || 0,
-      totalProdutos,
+      totalEstoque,
       totalClientes,
     });
   } catch (err) {
@@ -33,6 +43,10 @@ export async function resumo(req, res) {
     res.status(500).json({ error: 'Erro ao carregar resumo do dashboard.' });
   }
 }
+
+
+
+
 
 // GET /api/dashboard/receita-mensal
 export async function receitaMensal(req, res) {

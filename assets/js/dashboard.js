@@ -16,7 +16,7 @@ async function carregarResumoDashboard() {
 
         const totalFaturado = res?.totalFaturado ?? 0;
         const totalTransacoes = res?.totalTransacoes ?? 0;
-        const totalProdutos = res?.totalProdutos ?? 0;
+        const totalEstoque = res?.totalEstoque ?? 0;
         const totalClientes = res?.totalClientes ?? 0;
 
         const elFat = document.getElementById('cardTotalFaturado');
@@ -26,7 +26,7 @@ async function carregarResumoDashboard() {
 
         if (elFat) elFat.textContent = formatCurrencyBRL(totalFaturado);
         if (elTran) elTran.textContent = totalTransacoes.toString();
-        if (elProd) elProd.textContent = totalProdutos.toString();
+        if (elProd) elProd.textContent = totalEstoque.toString();
         if (elCli) elCli.textContent = totalClientes.toString();
     } catch (err) {
         console.error('[DASHBOARD] Erro ao carregar resumo:', err);
@@ -113,6 +113,32 @@ async function carregarGraficoTopProdutos() {
         console.error('[DASHBOARD] Erro ao carregar gráfico de produtos:', err);
     }
 }
+
+async function carregarUsuario() {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch("/api/user", {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (response.status === 401) {
+      console.log("⚠ Usuário não autorizado (token inválido)");
+      return;
+    }
+
+    const data = await response.json();
+
+    document.querySelector(".user span").textContent = data.nome;
+
+  } catch (error) {
+    console.log("Erro ao carregar usuário:", error);
+  }
+}
+
+carregarUsuario();
 
 // Quando a página carregar, busca tudo
 document.addEventListener('DOMContentLoaded', () => {

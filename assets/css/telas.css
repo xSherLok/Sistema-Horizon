@@ -7,10 +7,11 @@
 }
 
 body {
-  background: #f5f6fa;
+background: #f5f6fa;
   color: #333;
   display: flex;
-  min-height: 100vh;
+  height: 100vh;       /* <-- mantém a tela inteira */
+  overflow: hidden;    /* <-- impede scroll global */
 }
 
 
@@ -38,7 +39,9 @@ body {
 .main-content {
   flex: 1;
   padding: 20px;
-  overflow-y: auto;
+  height: 100vh;       /* ocupa toda a altura */
+  overflow-y: auto;    /* scroll somente aqui */
+  overflow-x: hidden;
 }
 
 /* Header com search e avatar */
@@ -195,6 +198,7 @@ table tr:hover {
     flex-direction: row;
     justify-content: space-around;
     padding: 10px;
+    height: 100vh;
   }
   .cards {
     grid-template-columns: 1fr;

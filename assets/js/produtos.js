@@ -10,44 +10,81 @@ function _badgeStatus(st) {
   return '<span class="badge bg-light text-dark">' + (st || '') + '</span>';
 }
 
-/* ========= Lista de produtos (render + ordem correta) ========= */
+/* ========= Lista de produtos ========= */
+// Botão para mostrar apenas produtos esgotados
+let mostrarEsgotados = false; // controle do botão
+
+document.querySelector('#btnEsgotados').addEventListener('click', function () {
+  mostrarEsgotados = !mostrarEsgotados; // alterna o estado
+
+  // Troca o texto do botão
+  this.textContent = mostrarEsgotados ? "Voltar à lista" : "Mostrar esgotados";
+
+  carregarProdutos(1);
+});
+
 async function carregarProdutos(page) {
   try {
     page = page || 1;
+
     var token = localStorage.getItem('token');
     var q = (document.querySelector('#buscaProdutos') || {}).value || '';
+
     var res = await fetch('/api/produtos?q=' + encodeURIComponent(q) + '&page=' + page + '&limit=50', {
       headers: { 'Authorization': 'Bearer ' + token }
     });
+
     if (!res.ok) { console.error('GET /api/produtos', res.status); return; }
+
     var json = await res.json();
     var data = Array.isArray(json) ? json : (json.data || []);
+
     var tbody = _tbodyProdutos();
     if (!tbody) { console.warn('tbodyProdutos não encontrado'); return; }
+
+    // --------------------------------------------------------------
+    // 🔥 AQUI ENTRA O FILTRO PADRÃO / OU FILTRO DE ESGOTADOS
+    // --------------------------------------------------------------
+
+    if (mostrarEsgotados) {
+      // Mostrar SOMENTE produtos com estoque zero
+      data = data.filter(p => (p.estoque ?? 0) === 0);
+    } else {
+      // Filtro padrão: NÃO mostrar produtos com estoque zero
+      data = data.filter(p => (p.estoque ?? 0) > 0);
+    }
+
+    // --------------------------------------------------------------
 
     tbody.innerHTML = data.map(function (p) {
       return (
         '<tr>' +
-        '<td><strong>' + (p && p.nome || '') + '</strong></td>' +
-        '<td>' + (p && p.categoria || '') + '</td>' +
-        '<td>' + (p && p.tamanho || '') + '</td>' +
-        '<td>' + _fmtBRL(p && p.precoVenda) + '</td>' +
-        '<td>' + (p && (p.estoque != null ? p.estoque : 0)) + '</td>' +
-        '<td>' + _badgeStatus(p && p.status) + '</td>' +
+        '<td><strong>' + (p?.nome || '') + '</strong></td>' +
+        '<td>' + (p?.categoria || '') + '</td>' +
+        '<td>' + (p?.tamanho || '') + '</td>' +
+        '<td>' + _fmtBRL(p?.precoVenda) + '</td>' +
+        '<td>' + (p?.estoque ?? 0) + '</td>' +
+        '<td>' + _badgeStatus(p?.status) + '</td>' +
         '<td>' +
-        '<div class="d-flex gap-2">' +
-        '<button class="btn btn-sm btn-secondary" data-p-view="' + p._id + '" data-bs-toggle="modal" data-bs-target="#modalVerProduto">Ver</button>' +
-        '<button class="btn btn-sm btn-primary" data-p-edit="' + p._id + '" data-bs-toggle="modal" data-bs-target="#modalNovoProduto">Editar</button>' +
-        '<button class="btn btn-sm btn-danger" data-p-del="' + p._id + '">Excluir</button>' +
-        '</div>' +
+          '<div class="d-flex gap-2">' +
+            '<button class="btn btn-sm btn-secondary" data-p-view="' + p._id + '" data-bs-toggle="modal" data-bs-target="#modalVerProduto">Ver</button>' +
+            '<button class="btn btn-sm btn-primary" data-p-edit="' + p._id + '" data-bs-toggle="modal" data-bs-target="#modalNovoProduto">Editar</button>' +
+            '<button class="btn btn-sm btn-danger" data-p-del="' + p._id + '">Excluir</button>' +
+          '</div>' +
         '</td>' +
-
         '</tr>'
       );
     }).join('');
-  } catch (e) { console.error('carregarProdutos erro', e); }
+
+  } catch (e) {
+    console.error('carregarProdutos erro', e);
+  }
 }
+
 window.carregarProdutos = carregarProdutos;
+
+
+
 
 /* ========= Ver produto (preenche modal) ========= */
 async function verProduto(id) {
