@@ -68,7 +68,7 @@ async function carregarProdutos(page) {
         '<td>' +
           '<div class="d-flex gap-2">' +
             '<button class="btn btn-sm btn-secondary" data-p-view="' + p._id + '" data-bs-toggle="modal" data-bs-target="#modalVerProduto">Ver</button>' +
-            '<button class="btn btn-sm btn-primary" data-p-edit="' + p._id + '" data-bs-toggle="modal" data-bs-target="#modalNovoProduto">Editar</button>' +
+            '<button type="button" class="btn btn-sm btn-outline-secondary btn-venda-editar" data-p-edit="' + p._id + '" data-bs-toggle="modal" data-bs-target="#modalNovoProduto">Editar</button>' +
             '<button class="btn btn-sm btn-danger" data-p-del="' + p._id + '">Excluir</button>' +
           '</div>' +
         '</td>' +
